@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://c31fo72ynawpb"]
+
+[ext_resource type="Script" uid="uid://dudkhtg5nybfu" path="res://scripts/enemy.gd" id="1_4gyqm"]
+[ext_resource type="Texture2D" uid="uid://jtnfifmggvq7" path="res://assets/sprites/enemies/slime_green.png" id="2_qi2p4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iifgy"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epg4t"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yqyl"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(48, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wujgv"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(72, 24, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hb8ge"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iifgy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_epg4t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3yqyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wujgv")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
+size = Vector2(13, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e1ltt"]
+size = Vector2(15, 13)
+
+[node name="Enemy" type="CharacterBody2D" unique_id=529442611]
+collision_layer = 4
+script = ExtResource("1_4gyqm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1717993725]
+sprite_frames = SubResource("SpriteFrames_hb8ge")
+animation = &"walk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=44345137]
+position = Vector2(0, 5)
+shape = SubResource("RectangleShape2D_4gyqm")
+
+[node name="Pivot" type="Marker2D" parent="." unique_id=1225247230]
+
+[node name="LedgeCheck" type="RayCast2D" parent="Pivot" unique_id=1423967353]
+position = Vector2(7, 0)
+target_position = Vector2(0, 20)
+
+[node name="WallCheck" type="RayCast2D" parent="Pivot" unique_id=262733832]
+position = Vector2(-6, 0)
+target_position = Vector2(14, 0)
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1476136627]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=196636797]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_e1ltt")

@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://jyrhf0bjyerj"]
+
+[ext_resource type="Script" uid="uid://dn6xbeua3fq5m" path="res://scripts/global_pause.gd" id="1_sk1cs"]
+
+[node name="GlobalPause" type="CanvasLayer" unique_id=143739126]
+layer = 100
+script = ExtResource("1_sk1cs")
+
+[node name="Background" type="ColorRect" parent="." unique_id=145240145]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0.15686275)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=224938571]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -48.0
+offset_top = -33.0
+offset_right = 48.0
+offset_bottom = 33.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer" unique_id=1885005569]
+layout_mode = 2
+text = "Resume"
+
+[node name="MenuButton" type="Button" parent="VBoxContainer" unique_id=447435704]
+layout_mode = 2
+text = "Main Menu"

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://dhdl6wi2envuc"]
+
+[ext_resource type="Script" uid="uid://jh4arfaigo" path="res://scripts/spike.gd" id="1_8ryga"]
+[ext_resource type="Texture2D" uid="uid://upgyq7unng8e" path="res://assets/sprites/hazards/spike.png" id="2_7k7bx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tggh8"]
+atlas = ExtResource("2_7k7bx")
+region = Rect2(0, 0, 16, 16)
+
+[node name="Spike" type="Area2D" unique_id=462265524]
+script = ExtResource("1_8ryga")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2142667989]
+texture = SubResource("AtlasTexture_tggh8")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1531741098]
+polygon = PackedVector2Array(-8, 8, 8, 8, 0, -5)

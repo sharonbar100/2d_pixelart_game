@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://8xord63246dk"]
+
+[ext_resource type="Shader" uid="uid://d0j65eh3nrnly" path="res://scripts/new_shader.gdshader" id="1_diyjt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sl507"]
+shader = ExtResource("1_diyjt")
+shader_parameter/aberration_amount = 0.0
+shader_parameter/scanline_opacity = 0.2190000104025
+shader_parameter/brightness_multiplier = 1.2
+shader_parameter/vignette_multiplier = 0.8800000418
+
+[node name="CRTFilter" type="CanvasLayer" unique_id=1134836432]
+layer = 100
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1074324970]
+material = SubResource("ShaderMaterial_sl507")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
