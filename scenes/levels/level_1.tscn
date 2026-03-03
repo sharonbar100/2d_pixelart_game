@@ -527,6 +527,7 @@ position = Vector2(986, -406)
 
 [node name="FinishFlag2" parent="." unique_id=230371733 instance=ExtResource("5_qxy0u")]
 position = Vector2(639, -864)
+collision_mask = 2
 next_level_scene = "uid://cynvpisfocd06"
 
 [node name="ProCamera2D" type="Camera2D" parent="." unique_id=1212933804 node_paths=PackedStringArray("target")]

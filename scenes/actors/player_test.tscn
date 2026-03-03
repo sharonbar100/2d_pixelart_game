@@ -206,6 +206,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("2_amqna")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_e61dx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_4iv8r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_1labk")
+}],
+"loop": true,
+"name": &"ledge_idle",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("17_1labk")
 }, {
 "duration": 1.0,
@@ -283,3 +300,11 @@ debug_color = Color(1, 0, 0, 0.42000002)
 position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_hph3a")
 debug_color = Color(0.5074483, 0.5793735, 0, 0.89500004)
+
+[node name="WallRayCast" type="RayCast2D" parent="." unique_id=1289754759]
+position = Vector2(0, -4)
+target_position = Vector2(15, 0)
+
+[node name="LedgeRayCast" type="RayCast2D" parent="." unique_id=502230101]
+position = Vector2(0, -16)
+target_position = Vector2(15, 0)

@@ -18,9 +18,9 @@ var is_in_knockback = false
 @export var speed = 130.0                
 @export var acceleration = 2500.0  
 @export var friction = 5000.0      
-@export var air_acceleration = 1500.0 
-@export var jump_velocity = -260.0 
-@export var gravity_scale = 1.0    
+@export var air_acceleration = 2500.0 
+@export var jump_velocity = -250.0 
+@export var gravity_scale = 0.85    
 
 # --- Ladder Settings ---
 @export var climb_speed = 60.0 
@@ -28,6 +28,13 @@ var is_on_ladder = false
 var is_overlapping_ladder = false 
 var ladder_ignore_timer = 0.0 
 var jumped_from_ladder = false 
+
+# --- Ledge Grab Settings ---
+var is_hanging = false
+var ledge_drop_timer = 0.0
+@export var ledge_ray_length = 5.0
+@export var ledge_snap_offset_y = 13.0 
+@export var ledge_snap_offset_x = 5.0 
 
 # --- Landing Sensitivity ---
 @export var shake_threshold = 500.0 
@@ -38,6 +45,7 @@ var last_velocity_y = 0.0
 @export var dash_duration = 0.25    
 @export var ground_dash_lift = -5.0 
 @export var ladder_dash_nudge = 0.3 
+@export var dash_corner_correction = 8 
 var is_dashing = false
 var can_dash = true 
 var last_facing_direction = 1.0 
@@ -60,10 +68,12 @@ var block_input = false
 # --- Nodes Reference ---
 @onready var animator = $AnimatedSprite2D 
 @onready var ladder_hitbox = $LadderHitbox 
-
-# UPDATED: Area2D and CollisionShape References for Hurtbox
 @onready var hurtbox = $Hurtbox 
 @onready var hurtbox_shape = $Hurtbox/CollisionShape2D 
+
+# Ledge Checkers
+@onready var wall_raycast = $WallRayCast
+@onready var ledge_raycast = $LedgeRayCast
 
 var all_layers: Array[TileMapLayer] = []
 
@@ -80,8 +90,6 @@ func _ready():
 	
 	if ladder_hitbox:
 		ladder_hitbox.disabled = true
-		
-	# REMOVED the disabling of the Hurtbox. As an Area2D, it naturally passes through walls.
 	
 	if animator:
 		animator.animation_looped.connect(_on_animation_looped)
@@ -138,12 +146,19 @@ func _physics_process(delta: float) -> void:
 
 	if ladder_ignore_timer > 0:
 		ladder_ignore_timer -= delta
+		
+	if ledge_drop_timer > 0:
+		ledge_drop_timer -= delta
 
 	check_ladder_overlap()
 	check_spike_overlap()
+	update_raycast_directions()
 	
-	if Input.is_action_just_pressed("attack") and not is_attacking and not is_dashing and not is_on_ladder:
+	if Input.is_action_just_pressed("attack") and not is_attacking and not is_dashing and not is_on_ladder and not is_hanging:
 		perform_attack()
+	
+	if not is_in_knockback and not is_attacking:
+		handle_auto_grab()
 	
 	if is_dashing:
 		handle_dash(delta)
@@ -151,15 +166,71 @@ func _physics_process(delta: float) -> void:
 		apply_knockback_physics(delta)
 	elif is_on_ladder:
 		handle_ladder_movement(delta)
+	elif is_hanging:
+		handle_ledge_hang(delta)
 	else:
 		handle_standard_movement(delta)
-		handle_auto_grab()
+		check_ledge_grab()
+
+	if is_dashing:
+		apply_dash_corner_correction(delta)
 
 	move_and_slide()
 	update_animations()
 	
 	if is_attacking:
 		check_attack_hitbox()
+
+func update_raycast_directions():
+	if wall_raycast and ledge_raycast:
+		wall_raycast.target_position.x = ledge_ray_length * last_facing_direction
+		ledge_raycast.target_position.x = ledge_ray_length * last_facing_direction
+
+func check_ledge_grab():
+	if is_on_floor() or velocity.y < 0 or is_on_ladder or is_overlapping_ladder or ledge_drop_timer > 0 or is_dashing:
+		return
+		
+	if wall_raycast.is_colliding() and not ledge_raycast.is_colliding():
+		
+		# --- FIX: Read the wall's normal to force the correct facing direction ---
+		# The normal points away from the wall. If wall is right (normal points left/-1), we face right (1).
+		var wall_normal_x = wall_raycast.get_collision_normal().x
+		if wall_normal_x != 0:
+			last_facing_direction = -sign(wall_normal_x)
+		
+		is_hanging = true
+		has_jumped = false 
+		can_dash = true 
+		velocity = Vector2.ZERO
+		
+		var space_state = get_world_2d().direct_space_state
+		
+		var wall_collision_x = wall_raycast.get_collision_point().x
+		var cast_x = wall_collision_x + (last_facing_direction * 2.0)
+		
+		var origin = Vector2(cast_x, ledge_raycast.global_position.y)
+		var end = origin + Vector2(0, 50) 
+		
+		var query = PhysicsRayQueryParameters2D.create(origin, end)
+		query.collision_mask = wall_raycast.collision_mask
+		var result = space_state.intersect_ray(query)
+		
+		if result:
+			global_position.y = result.position.y + ledge_snap_offset_y
+			global_position.x = wall_collision_x - (last_facing_direction * ledge_snap_offset_x)
+
+func handle_ledge_hang(_delta: float):
+	velocity = Vector2.ZERO 
+	
+	if Input.is_action_just_pressed("jump") and not block_input:
+		is_hanging = false
+		velocity.y = jump_velocity
+		has_jumped = true
+		ledge_drop_timer = 0.2
+	
+	elif Input.is_action_just_pressed("move_down"):
+		is_hanging = false
+		ledge_drop_timer = 0.2 
 
 func perform_attack():
 	is_attacking = true
@@ -203,6 +274,7 @@ func take_damage(amount: int, source_position: Vector2):
 	is_in_knockback = true
 	knockback_timer = knockback_stun_time 
 	is_on_ladder = false 
+	is_hanging = false 
 	is_dashing = false
 	is_attacking = false 
 	enemies_hit_this_attack.clear()
@@ -248,7 +320,6 @@ func check_spike_overlap():
 	if is_invincible or is_in_knockback:
 		return
 		
-	# UPDATED: Now dynamically checks the shape inside your new Hurtbox Area2D
 	if not hurtbox_shape or not hurtbox_shape.shape: 
 		return
 		
@@ -277,14 +348,19 @@ func handle_auto_grab():
 	if is_overlapping_ladder and ladder_ignore_timer <= 0 and velocity.y >= -10.0:
 		var pressing_up = Input.is_action_pressed("move_up")
 		var pressing_down = Input.is_action_pressed("move_down") and not is_on_floor()
-		var auto_catch = not is_on_floor() and velocity.y >= 0
+		var auto_catch = not is_on_floor() and velocity.y >= 0 and not is_dashing
 		
 		if pressing_up or pressing_down or auto_catch:
 			is_on_ladder = true
+			is_hanging = false 
 			has_jumped = false 
 			jumped_from_ladder = false 
 			can_dash = true 
 			velocity = Vector2.ZERO
+			
+			if is_dashing:
+				is_dashing = false
+				dash_timer = 0
 
 func handle_ladder_movement(delta: float) -> void:
 	var v_dir = Input.get_axis("move_up", "move_down")
@@ -367,6 +443,22 @@ func handle_dash(delta: float) -> void:
 		return
 	if not Input.is_action_pressed("dash") or dash_timer <= 0: end_dash()
 
+func apply_dash_corner_correction(delta: float):
+	var motion = velocity * delta
+	if test_move(global_transform, motion):
+		
+		for i in range(1, dash_corner_correction + 1):
+			var test_transform = global_transform.translated(Vector2(0, i))
+			if not test_move(test_transform, motion):
+				global_position.y += i
+				return
+		
+		for i in range(1, dash_corner_correction + 1):
+			var test_transform = global_transform.translated(Vector2(0, -i))
+			if not test_move(test_transform, motion):
+				global_position.y -= i
+				return
+
 func start_dash():
 	if is_on_ladder:
 		global_position.y += ladder_dash_nudge
@@ -390,10 +482,10 @@ func end_dash():
 func update_animations():
 	if not animator: return
 	
-	animator.flip_h = last_facing_direction < 0
 	attack_area.scale.x = last_facing_direction
 		
 	var target_anim = animator.animation 
+	var is_facing_left = last_facing_direction < 0
 	
 	if is_in_knockback: 
 		target_anim = "fall"
@@ -401,6 +493,8 @@ func update_animations():
 		target_anim = "attack"
 	elif is_dashing: 
 		target_anim = "dash"
+	elif is_hanging: 
+		target_anim = "ledge_idle"
 	elif is_on_ladder:
 		if velocity == Vector2.ZERO: target_anim = "hang"
 		elif velocity.y != 0: target_anim = "climb_y"
@@ -409,6 +503,11 @@ func update_animations():
 		target_anim = "jump" if velocity.y < 0 else "fall"
 	else: 
 		target_anim = "walk" if velocity.x != 0 else "idle"
+	
+	if is_hanging:
+		animator.flip_h = not is_facing_left 
+	else:
+		animator.flip_h = is_facing_left
 	
 	if animator.animation != target_anim: 
 		animator.play(target_anim)
