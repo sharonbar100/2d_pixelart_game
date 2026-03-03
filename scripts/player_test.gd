@@ -24,6 +24,7 @@ var is_in_knockback = false
 
 # --- Ladder Settings ---
 @export var climb_speed = 60.0 
+@export var ladder_horizontal_freedom = 10.0 
 var is_on_ladder = false
 var is_overlapping_ladder = false 
 var ladder_ignore_timer = 0.0 
@@ -32,7 +33,7 @@ var jumped_from_ladder = false
 # --- Ledge Grab Settings ---
 var is_hanging = false
 var ledge_drop_timer = 0.0
-@export var ledge_ray_length = 5.0
+@export var ledge_ray_length = 7.0
 @export var ledge_snap_offset_y = 13.0 
 @export var ledge_snap_offset_x = 5.0 
 
@@ -192,8 +193,6 @@ func check_ledge_grab():
 		
 	if wall_raycast.is_colliding() and not ledge_raycast.is_colliding():
 		
-		# --- FIX: Read the wall's normal to force the correct facing direction ---
-		# The normal points away from the wall. If wall is right (normal points left/-1), we face right (1).
 		var wall_normal_x = wall_raycast.get_collision_normal().x
 		if wall_normal_x != 0:
 			last_facing_direction = -sign(wall_normal_x)
@@ -316,6 +315,52 @@ func check_ladder_overlap():
 		is_on_ladder = false
 		if velocity.y < 0: velocity.y = 0
 
+# --- NEW FIX: Replaced heavy tilemap scanning with a simple boundary clamp ---
+func snap_to_ladder_x():
+	var bounds = get_ladder_bounds_x()
+	# Clamps the player's X position to be inside the allowed freedom bounds.
+	# If jumping between vertical ladders, X is already in bounds, so no janky movement!
+	global_position.x = clamp(global_position.x, bounds.x, bounds.y)
+
+func get_ladder_bounds_x() -> Vector2:
+	if not ladder_hitbox or not ladder_hitbox.shape: 
+		return Vector2(-INF, INF)
+		
+	var shape_rect = ladder_hitbox.shape.get_rect()
+	var global_rect = Rect2(ladder_hitbox.global_position + shape_rect.position, shape_rect.size)
+	
+	for layer in all_layers:
+		if not is_instance_valid(layer): continue
+		
+		var top_left = layer.local_to_map(layer.to_local(global_rect.position))
+		var bottom_right = layer.local_to_map(layer.to_local(global_rect.end))
+		
+		for x in range(top_left.x, bottom_right.x + 1):
+			for y in range(top_left.y, bottom_right.y + 1):
+				var cell_coords = Vector2i(x, y)
+				var tile_data = layer.get_cell_tile_data(cell_coords)
+				
+				if tile_data and tile_data.get_custom_data("is_ladder"):
+					var min_x_cell = cell_coords.x
+					var max_x_cell = cell_coords.x
+					
+					var left_data = layer.get_cell_tile_data(Vector2i(min_x_cell - 1, cell_coords.y))
+					while left_data and left_data.get_custom_data("is_ladder"):
+						min_x_cell -= 1
+						left_data = layer.get_cell_tile_data(Vector2i(min_x_cell - 1, cell_coords.y))
+						
+					var right_data = layer.get_cell_tile_data(Vector2i(max_x_cell + 1, cell_coords.y))
+					while right_data and right_data.get_custom_data("is_ladder"):
+						max_x_cell += 1
+						right_data = layer.get_cell_tile_data(Vector2i(max_x_cell + 1, cell_coords.y))
+						
+					var min_pos = layer.to_global(layer.map_to_local(Vector2i(min_x_cell, cell_coords.y)))
+					var max_pos = layer.to_global(layer.map_to_local(Vector2i(max_x_cell, cell_coords.y)))
+					
+					return Vector2(min_pos.x - ladder_horizontal_freedom, max_pos.x + ladder_horizontal_freedom)
+					
+	return Vector2(-INF, INF)
+
 func check_spike_overlap():
 	if is_invincible or is_in_knockback:
 		return
@@ -345,7 +390,7 @@ func check_spike_overlap():
 					return 
 
 func handle_auto_grab():
-	if is_overlapping_ladder and ladder_ignore_timer <= 0 and velocity.y >= -10.0:
+	if not is_on_ladder and is_overlapping_ladder and ladder_ignore_timer <= 0 and velocity.y >= -10.0:
 		var pressing_up = Input.is_action_pressed("move_up")
 		var pressing_down = Input.is_action_pressed("move_down") and not is_on_floor()
 		var auto_catch = not is_on_floor() and velocity.y >= 0 and not is_dashing
@@ -357,6 +402,8 @@ func handle_auto_grab():
 			jumped_from_ladder = false 
 			can_dash = true 
 			velocity = Vector2.ZERO
+			
+			snap_to_ladder_x()
 			
 			if is_dashing:
 				is_dashing = false
@@ -376,6 +423,17 @@ func handle_ladder_movement(delta: float) -> void:
 		if h_dir != 0: last_facing_direction = sign(h_dir)
 	else:
 		velocity = Vector2.ZERO
+		
+	if velocity.x != 0:
+		var bounds = get_ladder_bounds_x()
+		var next_x = global_position.x + (velocity.x * delta)
+		
+		if next_x < bounds.x:
+			global_position.x = bounds.x
+			velocity.x = 0
+		elif next_x > bounds.y:
+			global_position.x = bounds.y
+			velocity.x = 0
 		
 	if Input.is_action_just_pressed("dash") and can_dash and not block_input:
 		start_dash()

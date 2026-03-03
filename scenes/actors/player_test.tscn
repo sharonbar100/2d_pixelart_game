@@ -249,7 +249,7 @@ animations = [{
 size = Vector2(17, 10)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q13i1"]
-radius = 4.0
+radius = 2.0
 height = 25.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8w5d1"]
@@ -306,5 +306,5 @@ position = Vector2(0, -4)
 target_position = Vector2(15, 0)
 
 [node name="LedgeRayCast" type="RayCast2D" parent="." unique_id=502230101]
-position = Vector2(0, -16)
+position = Vector2(0, -18)
 target_position = Vector2(15, 0)
