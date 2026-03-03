@@ -21,6 +21,7 @@ var is_in_knockback = false
 @export var air_acceleration = 2500.0 
 @export var jump_velocity = -250.0 
 @export var gravity_scale = 0.85    
+@export var max_fall_speed = 380.0 # --- NEW: Caps the downward falling speed ---
 
 # --- Ladder Settings ---
 @export var climb_speed = 60.0 
@@ -57,7 +58,6 @@ var dash_nudge_active = false
 @export var attack_lunge_speed = 50.0 
 var is_attacking = false
 var enemies_hit_this_attack = [] 
-@onready var attack_area = $AttackArea 
 
 # --- Precise Movement Tweaks ---
 var jump_buffer_duration = 0.1
@@ -66,15 +66,22 @@ var was_in_air = false
 var has_jumped = false 
 var block_input = false 
 
-# --- Nodes Reference ---
-@onready var animator = $AnimatedSprite2D 
-@onready var ladder_hitbox = $LadderHitbox 
-@onready var hurtbox = $Hurtbox 
-@onready var hurtbox_shape = $Hurtbox/CollisionShape2D 
+# ==========================================
+# --- NODES REFERENCE (ORGANIZED) ---
+# ==========================================
+@onready var animator = $Graphics/AnimatedSprite2D 
 
-# Ledge Checkers
-@onready var wall_raycast = $WallRayCast
-@onready var ledge_raycast = $LedgeRayCast
+# Combat
+@onready var attack_area = $Combat/AttackArea 
+@onready var hurtbox = $Combat/Hurtbox 
+@onready var hurtbox_shape = $Combat/Hurtbox/CollisionShape2D 
+
+# Sensors & Physics Checkers
+@onready var main_collider = $MainCollider 
+@onready var ladder_hitbox = $LadderHitbox 
+@onready var wall_raycast = $EnvironmentChecks/WallRayCast
+@onready var ledge_raycast = $EnvironmentChecks/LedgeRayCast
+# ==========================================
 
 var all_layers: Array[TileMapLayer] = []
 
@@ -315,11 +322,8 @@ func check_ladder_overlap():
 		is_on_ladder = false
 		if velocity.y < 0: velocity.y = 0
 
-# --- NEW FIX: Replaced heavy tilemap scanning with a simple boundary clamp ---
 func snap_to_ladder_x():
 	var bounds = get_ladder_bounds_x()
-	# Clamps the player's X position to be inside the allowed freedom bounds.
-	# If jumping between vertical ladders, X is already in bounds, so no janky movement!
 	global_position.x = clamp(global_position.x, bounds.x, bounds.y)
 
 func get_ladder_bounds_x() -> Vector2:
@@ -450,6 +454,11 @@ func handle_standard_movement(delta: float) -> void:
 	var gravity = get_gravity() * gravity_scale
 	if not is_on_floor():
 		velocity += gravity * delta
+		
+		# --- NEW FIX: Terminal Velocity (Max Fall Speed) ---
+		if velocity.y > max_fall_speed:
+			velocity.y = max_fall_speed
+			
 		was_in_air = true
 		last_velocity_y = velocity.y 
 	else:

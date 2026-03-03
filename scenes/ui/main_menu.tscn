@@ -31,15 +31,21 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Level 1"
 
+[node name="Hard_Level_1" type="Button" parent="VBoxContainer" unique_id=1549609066]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Hard Level 1"
+
 [node name="Test_Level" type="Button" parent="VBoxContainer" unique_id=1191685865]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
-text = "Test_Level"
+text = "Old Version"
 
 [node name="Quit" type="Button" parent="VBoxContainer" unique_id=1906660440]
 layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/Level_1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="VBoxContainer/Hard_Level_1" to="." method="_on_hard_level_1_pressed"]
 [connection signal="pressed" from="VBoxContainer/Test_Level" to="." method="_on_test_level_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

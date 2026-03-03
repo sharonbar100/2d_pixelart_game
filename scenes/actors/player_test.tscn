@@ -248,10 +248,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_acu1q"]
 size = Vector2(17, 10)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q13i1"]
-radius = 2.0
-height = 25.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8w5d1"]
 radius = 2.0
 height = 10.0
@@ -263,21 +259,15 @@ size = Vector2(5, 1)
 collision_layer = 2
 script = ExtResource("1_1labk")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=212173977]
+[node name="Graphics" type="Node2D" parent="." unique_id=1490253689]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Graphics" unique_id=212173977]
 light_mask = 0
 visibility_layer = 3
 sprite_frames = SubResource("SpriteFrames_nvl01")
 animation = &"idle"
 
-[node name="AttackArea" type="Area2D" parent="." unique_id=1633057176]
-collision_mask = 4
-monitoring = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=2032636009]
-position = Vector2(16, 1)
-shape = SubResource("RectangleShape2D_acu1q")
-
-[node name="MoveParticles" type="CPUParticles2D" parent="." unique_id=2098259108]
+[node name="MoveParticles" type="CPUParticles2D" parent="Graphics" unique_id=2098259108]
 emitting = false
 amount = 10
 lifetime = 0.4
@@ -285,26 +275,38 @@ direction = Vector2(1, 50)
 scale_amount_min = 0.0
 scale_amount_max = 11.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1719780946]
-shape = SubResource("CapsuleShape2D_q13i1")
+[node name="Combat" type="Node2D" parent="." unique_id=1066460956]
 
-[node name="Hurtbox" type="Area2D" parent="." unique_id=1637898124]
+[node name="AttackArea" type="Area2D" parent="Combat" unique_id=1633057176]
+collision_mask = 4
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/AttackArea" unique_id=2032636009]
+position = Vector2(16, 1)
+shape = SubResource("RectangleShape2D_acu1q")
+
+[node name="Hurtbox" type="Area2D" parent="Combat" unique_id=1637898124]
 collision_layer = 8
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1423832463]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/Hurtbox" unique_id=1423832463]
 shape = SubResource("CapsuleShape2D_8w5d1")
 debug_color = Color(1, 0, 0, 0.42000002)
+
+[node name="EnvironmentChecks" type="Node2D" parent="." unique_id=463034823]
+
+[node name="WallRayCast" type="RayCast2D" parent="EnvironmentChecks" unique_id=1289754759]
+position = Vector2(0, -4)
+target_position = Vector2(15, 0)
+
+[node name="LedgeRayCast" type="RayCast2D" parent="EnvironmentChecks" unique_id=502230101]
+position = Vector2(0, -18)
+target_position = Vector2(15, 0)
+
+[node name="MainCollider" type="CollisionPolygon2D" parent="." unique_id=1020284313]
+polygon = PackedVector2Array(0, -12, -3, -6, -3, 10, 0, 12, 3, 10, 3, -6)
 
 [node name="LadderHitbox" type="CollisionShape2D" parent="." unique_id=1226433295]
 position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_hph3a")
 debug_color = Color(0.5074483, 0.5793735, 0, 0.89500004)
-
-[node name="WallRayCast" type="RayCast2D" parent="." unique_id=1289754759]
-position = Vector2(0, -4)
-target_position = Vector2(15, 0)
-
-[node name="LedgeRayCast" type="RayCast2D" parent="." unique_id=502230101]
-position = Vector2(0, -18)
-target_position = Vector2(15, 0)

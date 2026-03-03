@@ -83,12 +83,17 @@ func die():
 	queue_free()
 
 func check_for_player_damage():
-	# Because of Layers and Masks, overlapping_areas will ONLY ever contain the PlayerHurtbox!
 	var overlapping_areas = hitbox.get_overlapping_areas()
 	for area in overlapping_areas:
-		var parent = area.get_parent()
-		if parent and parent.has_method("take_damage"):
-			parent.take_damage(1, global_position)
+		# --- FIX: Indestructible Tree Climber ---
+		# This will check the area, then its parent, then its grandparent, 
+		# until it finds the root Player node that has the take_damage function.
+		var target = area
+		while target != null:
+			if target.has_method("take_damage"):
+				target.take_damage(1, global_position)
+				break # We found the player and hit them, stop looking!
+			target = target.get_parent()
 
 func flip_enemy():
 	direction *= -1.0
