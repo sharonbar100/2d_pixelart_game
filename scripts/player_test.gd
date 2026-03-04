@@ -61,8 +61,9 @@ var is_dashing = false
 var can_dash = true 
 var last_facing_direction = 1.0 
 
-var dash_start_x = 0.0
+var dash_start_x = 0.0 # RESTORED
 var target_dash_distance = 0.0
+var dash_timer = 0.0 
 var dash_nudge_active = false 
 
 # --- Attack Settings ---
@@ -144,7 +145,6 @@ func _on_animation_finished():
 		enemies_hit_this_attack.clear() 
 
 func _physics_process(delta: float) -> void:
-	# If the player is dead, immediately stop processing physics so we don't crash during reload
 	if is_dead:
 		return
 		
@@ -177,7 +177,6 @@ func _physics_process(delta: float) -> void:
 	check_ladder_overlap()
 	check_spike_overlap()
 	
-	# If we hit a spike and died in the line above, STOP the rest of the script from running!
 	if is_dead:
 		return
 	
@@ -208,7 +207,6 @@ func _physics_process(delta: float) -> void:
 	if is_attacking:
 		check_attack_hitbox()
 
-# --- DRAWING DEBUG DOTS ---
 func _draw():
 	if not debug_ledge_mode: 
 		return
@@ -227,7 +225,6 @@ func _draw():
 	
 	draw_circle(local_top_pos, 2.0, Color.GREEN)
 
-# --- TILE-BASED LEDGE GRAB HELPERS ---
 func is_solid_tile_at(pos: Vector2) -> bool:
 	for layer in all_layers:
 		if not is_instance_valid(layer): continue
@@ -256,7 +253,6 @@ func get_solid_tile_center(pos: Vector2) -> Vector2:
 			return layer.to_global(layer.map_to_local(map_pos))
 	return pos
 
-# --- STRICT LEDGE GRAB LOGIC ---
 func check_ledge_grab():
 	if is_on_floor() or velocity.y < 0 or is_on_ladder or is_overlapping_ladder or ledge_drop_timer > 0 or is_dashing:
 		return
@@ -378,10 +374,9 @@ func apply_knockback_physics(delta: float):
 	velocity.x = move_toward(velocity.x, 0, friction * 0.6 * delta)
 
 func die():
-	is_dead = true # Flag the player as dead so the physics process stops running
+	is_dead = true
 	set_physics_process(false) 
 	Engine.time_scale = 1.0 
-	# call_deferred guarantees the reload waits for all physics processing to finish first!
 	get_tree().call_deferred("reload_current_scene")
 
 func is_ladder_at_offset(offset: Vector2) -> bool:
@@ -585,15 +580,22 @@ func handle_standard_movement(delta: float) -> void:
 		else:
 			velocity.x = move_toward(velocity.x, 0, air_acceleration * delta) 
 
-func handle_dash(_delta: float) -> void:
+func handle_dash(delta: float) -> void:
+	dash_timer -= delta
 	velocity.y = 0
 	
 	var distance_traveled = abs(global_position.x - dash_start_x)
 	
-	if is_on_wall() or distance_traveled >= target_dash_distance:
+	# CONDITION 1: We hit the perfect distance in open space. Snap and exit!
+	if distance_traveled >= target_dash_distance:
 		if not is_on_wall():
 			global_position.x = dash_start_x + (last_facing_direction * target_dash_distance)
-			
+		end_dash()
+		return
+
+	# CONDITION 2: We are grinding against a wall, so distance stopped increasing. 
+	# Wait for the timer to run out before exiting.
+	if dash_timer <= 0.0:
 		end_dash()
 		return
 
@@ -606,6 +608,10 @@ func handle_dash(_delta: float) -> void:
 		velocity.y = jump_velocity
 		has_jumped = true 
 		was_in_air = true
+		return
+		
+	var calculated_dash_speed = target_dash_distance / dash_duration
+	velocity.x = last_facing_direction * calculated_dash_speed
 
 func apply_dash_corner_correction(delta: float):
 	var motion = velocity * delta
@@ -633,8 +639,9 @@ func start_dash():
 	is_dashing = true
 	can_dash = false 
 	
+	dash_start_x = global_position.x # RESTORED THIS!
 	target_dash_distance = dash_distance_tiles * tile_size
-	dash_start_x = global_position.x
+	dash_timer = dash_duration 
 	
 	var calculated_dash_speed = target_dash_distance / dash_duration
 	velocity.x = last_facing_direction * calculated_dash_speed
