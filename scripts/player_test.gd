@@ -14,6 +14,9 @@ var invincibility_timer = 0.0
 var knockback_timer = 0.0
 var is_in_knockback = false
 
+# NEW: Prevents the physics engine from doing math on a dead character
+var is_dead = false 
+
 # --- Basic Movement Settings ---
 @export var speed = 130.0                
 @export var acceleration = 2500.0  
@@ -40,7 +43,6 @@ var ledge_drop_timer = 0.0
 @export var ledge_check_distance = 8.0 
 
 # NEW: How far the character reaches UPWARDS to find the ledge.
-# Positive number. It calculates the strict distance to the TOP of the ledge now.
 @export var ledge_check_upward_reach = 8.0 
 
 # NEW: Toggle this in the inspector to see the check points visually!
@@ -147,6 +149,9 @@ func _on_animation_finished():
 		enemies_hit_this_attack.clear() 
 
 func _physics_process(delta: float) -> void:
+	# STOP EXECUTION immediately if dead
+	if is_dead: return
+
 	if debug_ledge_mode:
 		queue_redraw()
 
@@ -175,6 +180,9 @@ func _physics_process(delta: float) -> void:
 
 	check_ladder_overlap()
 	check_spike_overlap()
+	
+	# CRITICAL GUARD: If we hit a spike and died in the line above, STOP the script from running movement logic.
+	if is_dead: return 
 	
 	if Input.is_action_just_pressed("attack") and not is_attacking and not is_dashing and not is_on_ladder and not is_hanging:
 		perform_attack()
@@ -210,21 +218,15 @@ func _draw():
 
 	var local_top_pos = player_top_tile_offset
 	
-	# Create a visual line showing exactly where the player reaches
 	var local_wall_base = local_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
 	var local_wall_top = local_wall_base + Vector2(0, -ledge_check_upward_reach)
 
-	# Draw the "Reach Zone" line
 	draw_line(local_wall_base, local_wall_top, Color.RED, 2.0)
-	
-	# Draw dots at the top and bottom of the reach zone
 	draw_circle(local_wall_base, 2.0, Color.RED)
 	draw_circle(local_wall_top, 2.0, Color.ORANGE)
 
-	# Draw the head-bonk safety check dot above the player
 	var local_above_player_pos = local_top_pos + Vector2(0, -tile_size)
 	draw_circle(local_above_player_pos, 2.0, Color.YELLOW)
-	
 	draw_circle(local_top_pos, 2.0, Color.GREEN)
 
 # --- TILE-BASED LEDGE GRAB HELPERS ---
@@ -254,52 +256,43 @@ func check_ledge_grab():
 	var player_top_pos = global_position + player_top_tile_offset
 	var wall_x = player_top_pos.x + (last_facing_direction * ledge_check_distance)
 	
-	# 1. Sample 3 points along the "Reach Zone" line from TOP to BOTTOM
-	# This ensures we find the highest ledge we can touch without skipping over it.
 	var hit_pos = Vector2.ZERO
 	var tile_hit = false
 	
 	var check_points = [
-		Vector2(wall_x, player_top_pos.y - ledge_check_upward_reach), # Max upward reach
-		Vector2(wall_x, player_top_pos.y - (ledge_check_upward_reach / 2.0)), # Middle
-		Vector2(wall_x, player_top_pos.y) # Base player level
+		Vector2(wall_x, player_top_pos.y - ledge_check_upward_reach), 
+		Vector2(wall_x, player_top_pos.y - (ledge_check_upward_reach / 2.0)),
+		Vector2(wall_x, player_top_pos.y) 
 	]
 	
 	for pt in check_points:
 		if is_solid_tile_at(pt):
 			hit_pos = pt
 			tile_hit = true
-			break # Found the highest reachable tile
+			break 
 			
 	if not tile_hit:
 		return 
 		
-	# 2. Find the exact mathematical bounds of the tile we hit
 	var wall_tile_center = get_solid_tile_center(hit_pos)
 	var ledge_top_y = wall_tile_center.y - (tile_size / 2.0)
 	
-	# 3. STRICT VERTICAL DISTANCE CHECK
 	var vertical_distance_to_top = player_top_pos.y - ledge_top_y
 	
-	# If the actual top of the ledge is further up than our max reach, deny the grab!
 	if vertical_distance_to_top > ledge_check_upward_reach:
 		return 
 		
-	# Prevent grabbing if we somehow fell slightly past it (too high above it)
 	if vertical_distance_to_top < -4.0:
 		return
 		
-	# 4. Check if the space directly above the ledge is empty
 	var directly_above_ledge = Vector2(wall_tile_center.x, ledge_top_y - (tile_size / 2.0))
 	if is_solid_tile_at(directly_above_ledge):
-		return # There is a block on top of this one, so it's a sheer wall, not a ledge.
+		return 
 		
-	# 5. Check if the space above the player is empty (head bonk check)
 	var above_player_pos = player_top_pos + Vector2(0, -tile_size)
 	if is_solid_tile_at(above_player_pos):
 		return 
 		
-	# Passed all checks! Grab the ledge.
 	is_hanging = true
 	has_jumped = false 
 	can_dash = true 
@@ -340,7 +333,7 @@ func check_attack_hitbox():
 				enemies_hit_this_attack.append(body)
 
 func take_damage(amount: int, source_position: Vector2):
-	if is_invincible: return 
+	if is_invincible or is_dead: return 
 	
 	is_invincible = true
 	invincibility_timer = invincibility_duration 
@@ -378,7 +371,21 @@ func apply_knockback_physics(delta: float):
 	velocity.x = move_toward(velocity.x, 0, friction * 0.6 * delta)
 
 func die():
+	if is_dead: return
+	is_dead = true
+	
+	# Safely disable the physics engine for this specific character body
+	set_physics_process(false)
+	
+	if main_collider:
+		main_collider.set_deferred("disabled", true)
+		
 	Engine.time_scale = 1.0 
+	
+	# Wait exactly one frame to allow the engine to finish processing the current state
+	await get_tree().process_frame
+	
+	# Queue the scene reload safely
 	get_tree().call_deferred("reload_current_scene")
 
 func is_ladder_at_offset(offset: Vector2) -> bool:
