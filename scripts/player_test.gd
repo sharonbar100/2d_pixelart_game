@@ -14,8 +14,8 @@ var invincibility_timer = 0.0
 var knockback_timer = 0.0
 var is_in_knockback = false
 
-# NEW: Prevents the physics engine from doing math on a dead character
-var is_dead = false 
+# NEW: Death state flag
+var is_dead = false
 
 # --- Basic Movement Settings ---
 @export var speed = 130.0                
@@ -39,13 +39,8 @@ var is_hanging = false
 var ledge_drop_timer = 0.0
 @export var tile_size = 16.0 
 
-# NEW: How far the character reaches horizontally to find the wall. 
 @export var ledge_check_distance = 8.0 
-
-# NEW: How far the character reaches UPWARDS to find the ledge.
 @export var ledge_check_upward_reach = 8.0 
-
-# NEW: Toggle this in the inspector to see the check points visually!
 @export var debug_ledge_mode = false 
 
 @export var ledge_snap_offset_y = 13.0 
@@ -106,6 +101,7 @@ func _notification(what):
 		block_input = false
 
 func _ready():
+	is_dead = false
 	current_health = max_health
 	add_to_group("Player")
 	GlobalHealthBar.activate(max_health, current_health)
@@ -120,13 +116,12 @@ func _ready():
 		animator.play("idle")
 	
 	attack_area.monitoring = false 
-	find_all_tile_layers(get_tree().root)
-
-func find_all_tile_layers(node: Node):
-	for child in node.get_children():
-		if child is TileMapLayer:
-			all_layers.append(child)
-		find_all_tile_layers(child)
+	
+	all_layers.clear()
+	var interactable_nodes = get_tree().get_nodes_in_group("InteractableLayers")
+	for node in interactable_nodes:
+		if node is TileMapLayer:
+			all_layers.append(node)
 
 func _exit_tree():
 	GlobalHealthBar.deactivate()
@@ -149,9 +144,10 @@ func _on_animation_finished():
 		enemies_hit_this_attack.clear() 
 
 func _physics_process(delta: float) -> void:
-	# STOP EXECUTION immediately if dead
-	if is_dead: return
-
+	# If the player is dead, immediately stop processing physics so we don't crash during reload
+	if is_dead:
+		return
+		
 	if debug_ledge_mode:
 		queue_redraw()
 
@@ -181,8 +177,9 @@ func _physics_process(delta: float) -> void:
 	check_ladder_overlap()
 	check_spike_overlap()
 	
-	# CRITICAL GUARD: If we hit a spike and died in the line above, STOP the script from running movement logic.
-	if is_dead: return 
+	# If we hit a spike and died in the line above, STOP the rest of the script from running!
+	if is_dead:
+		return
 	
 	if Input.is_action_just_pressed("attack") and not is_attacking and not is_dashing and not is_on_ladder and not is_hanging:
 		perform_attack()
@@ -227,14 +224,20 @@ func _draw():
 
 	var local_above_player_pos = local_top_pos + Vector2(0, -tile_size)
 	draw_circle(local_above_player_pos, 2.0, Color.YELLOW)
+	
 	draw_circle(local_top_pos, 2.0, Color.GREEN)
 
 # --- TILE-BASED LEDGE GRAB HELPERS ---
 func is_solid_tile_at(pos: Vector2) -> bool:
 	for layer in all_layers:
 		if not is_instance_valid(layer): continue
+		
+		if not layer.tile_set or layer.tile_set.get_physics_layers_count() == 0:
+			continue
+			
 		var map_pos = layer.local_to_map(layer.to_local(pos))
 		var tile_data = layer.get_cell_tile_data(map_pos)
+		
 		if tile_data and tile_data.get_collision_polygons_count(0) > 0:
 			return true
 	return false
@@ -242,8 +245,13 @@ func is_solid_tile_at(pos: Vector2) -> bool:
 func get_solid_tile_center(pos: Vector2) -> Vector2:
 	for layer in all_layers:
 		if not is_instance_valid(layer): continue
+		
+		if not layer.tile_set or layer.tile_set.get_physics_layers_count() == 0:
+			continue
+			
 		var map_pos = layer.local_to_map(layer.to_local(pos))
 		var tile_data = layer.get_cell_tile_data(map_pos)
+		
 		if tile_data and tile_data.get_collision_polygons_count(0) > 0:
 			return layer.to_global(layer.map_to_local(map_pos))
 	return pos
@@ -261,7 +269,7 @@ func check_ledge_grab():
 	
 	var check_points = [
 		Vector2(wall_x, player_top_pos.y - ledge_check_upward_reach), 
-		Vector2(wall_x, player_top_pos.y - (ledge_check_upward_reach / 2.0)),
+		Vector2(wall_x, player_top_pos.y - (ledge_check_upward_reach / 2.0)), 
 		Vector2(wall_x, player_top_pos.y) 
 	]
 	
@@ -276,7 +284,6 @@ func check_ledge_grab():
 		
 	var wall_tile_center = get_solid_tile_center(hit_pos)
 	var ledge_top_y = wall_tile_center.y - (tile_size / 2.0)
-	
 	var vertical_distance_to_top = player_top_pos.y - ledge_top_y
 	
 	if vertical_distance_to_top > ledge_check_upward_reach:
@@ -371,21 +378,10 @@ func apply_knockback_physics(delta: float):
 	velocity.x = move_toward(velocity.x, 0, friction * 0.6 * delta)
 
 func die():
-	if is_dead: return
-	is_dead = true
-	
-	# Safely disable the physics engine for this specific character body
-	set_physics_process(false)
-	
-	if main_collider:
-		main_collider.set_deferred("disabled", true)
-		
+	is_dead = true # Flag the player as dead so the physics process stops running
+	set_physics_process(false) 
 	Engine.time_scale = 1.0 
-	
-	# Wait exactly one frame to allow the engine to finish processing the current state
-	await get_tree().process_frame
-	
-	# Queue the scene reload safely
+	# call_deferred guarantees the reload waits for all physics processing to finish first!
 	get_tree().call_deferred("reload_current_scene")
 
 func is_ladder_at_offset(offset: Vector2) -> bool:
@@ -589,7 +585,7 @@ func handle_standard_movement(delta: float) -> void:
 		else:
 			velocity.x = move_toward(velocity.x, 0, air_acceleration * delta) 
 
-func handle_dash(delta: float) -> void:
+func handle_dash(_delta: float) -> void:
 	velocity.y = 0
 	
 	var distance_traveled = abs(global_position.x - dash_start_x)

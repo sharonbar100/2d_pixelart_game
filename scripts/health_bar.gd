@@ -14,32 +14,32 @@ var heart_texture = preload("res://assets/sprites/ui/healthbar_heart.png")
 
 @export_group("Shake Settings")
 @export var max_shake_intensity = 4.0
-# This prevents the shake from going past the screen edge if you 
-# positioned the UI close to the left.
 @export var left_limit_offset = 2.0 
 
 var is_pulsing = false
 var original_pos : Vector2
 
+# NEW: Keep track of the looping tween so we can kill it
+var pulse_tween : Tween 
+
 func _ready():
 	visible = false
 	if hearts_box:
-		# Remember exactly where you placed it in the editor
 		original_pos = hearts_box.position
 
 func activate(max_hp: int, current_hp: int):
 	visible = true 
 	hearts_box.add_theme_constant_override("separation", heart_spacing)
 	
-	# Reset position and color immediately
+	# Stop any running infinite loops before we destroy the hearts!
+	stop_low_health_pulse()
+	
 	hearts_box.position = original_pos
 	hearts_box.modulate = Color.WHITE
 	
-	# Clear old hearts
 	for child in hearts_box.get_children():
 		child.queue_free()
 		
-	# Wait one frame for the engine to finish clearing nodes
 	await get_tree().process_frame
 	
 	for i in range(max_hp):
@@ -50,7 +50,6 @@ func activate(max_hp: int, current_hp: int):
 		rect.custom_minimum_size = heart_display_size
 		rect.pivot_offset = heart_display_size / 2
 		
-		# Set initial state
 		if i < current_hp:
 			rect.modulate = Color.WHITE
 			rect.scale = Vector2.ONE
@@ -88,21 +87,18 @@ func apply_impact_shake():
 	var shake_tween = create_tween()
 	var intensity = max_shake_intensity
 	
-	# Flash the whole bar white
 	hearts_box.modulate = flash_color
 	
 	for i in range(4):
 		var rand_x = randf_range(-intensity, intensity)
 		var rand_y = randf_range(-intensity, intensity)
 		
-		# Clamping ensures the X doesn't go too far left of its 'Home' position
 		var clamped_x = clamp(rand_x, -left_limit_offset, intensity)
-		var offset = Vector2(clamped_x, rand_y)
+		var shake_offset = Vector2(clamped_x, rand_y) 
 		
-		shake_tween.tween_property(hearts_box, "position", original_pos + offset, 0.02)
+		shake_tween.tween_property(hearts_box, "position", original_pos + shake_offset, 0.02)
 		intensity *= 0.5 
 	
-	# Always return to the editor-defined original position
 	shake_tween.tween_property(hearts_box, "position", original_pos, 0.02)
 	shake_tween.parallel().tween_property(hearts_box, "modulate", Color.WHITE, 0.1)
 
@@ -111,19 +107,34 @@ func start_low_health_pulse():
 	is_pulsing = true
 	var first_heart = hearts_box.get_child(0)
 	
-	var pulse = create_tween().set_loops()
-	pulse.tween_property(first_heart, "scale", Vector2(1.2, 1.2), 0.25).set_trans(Tween.TRANS_SINE)
-	pulse.tween_property(first_heart, "scale", Vector2(1.0, 1.0), 0.25).set_trans(Tween.TRANS_SINE)
-	pulse.parallel().tween_property(first_heart, "modulate", low_health_color, 0.25)
-	pulse.parallel().tween_property(first_heart, "modulate", Color.WHITE, 0.25)
+	# Kill existing tween if there is one
+	if pulse_tween and pulse_tween.is_valid():
+		pulse_tween.kill()
+	
+	# bind_node safely aborts the tween if the heart gets deleted
+	pulse_tween = create_tween().bind_node(first_heart).set_loops()
+	
+	# Sequence 1: Grow and turn red
+	pulse_tween.tween_property(first_heart, "scale", Vector2(1.2, 1.2), 0.25).set_trans(Tween.TRANS_SINE)
+	pulse_tween.parallel().tween_property(first_heart, "modulate", low_health_color, 0.25)
+	
+	# Sequence 2: Shrink and turn white
+	pulse_tween.tween_property(first_heart, "scale", Vector2(1.0, 1.0), 0.25).set_trans(Tween.TRANS_SINE)
+	pulse_tween.parallel().tween_property(first_heart, "modulate", Color.WHITE, 0.25)
 
 func stop_low_health_pulse():
 	is_pulsing = false
+	
+	# Kill the infinite loop safely
+	if pulse_tween and pulse_tween.is_valid():
+		pulse_tween.kill()
+		
 	if hearts_box and hearts_box.get_child_count() > 0:
 		var first_heart = hearts_box.get_child(0)
-		var reset = create_tween()
-		reset.tween_property(first_heart, "scale", Vector2.ONE, 0.1)
-		reset.tween_property(first_heart, "modulate", Color.WHITE, 0.1)
+		if is_instance_valid(first_heart):
+			var reset = create_tween()
+			reset.tween_property(first_heart, "scale", Vector2.ONE, 0.1)
+			reset.tween_property(first_heart, "modulate", Color.WHITE, 0.1)
 
 func deactivate():
 	visible = false
