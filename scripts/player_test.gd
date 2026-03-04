@@ -61,7 +61,7 @@ var is_dashing = false
 var can_dash = true 
 var last_facing_direction = 1.0 
 
-var dash_start_x = 0.0 # RESTORED
+var dash_start_x = 0.0
 var target_dash_distance = 0.0
 var dash_timer = 0.0 
 var dash_nudge_active = false 
@@ -581,6 +581,15 @@ func handle_standard_movement(delta: float) -> void:
 			velocity.x = move_toward(velocity.x, 0, air_acceleration * delta) 
 
 func handle_dash(delta: float) -> void:
+	# FIX: Prioritize the jump check at the absolute top. 
+	# Do not let dash-end conditions eat the 1-frame "just_pressed" signal!
+	if Input.is_action_just_pressed("jump") and not has_jumped and not block_input:
+		end_dash()
+		velocity.y = jump_velocity
+		has_jumped = true 
+		was_in_air = true
+		return
+
 	dash_timer -= delta
 	velocity.y = 0
 	
@@ -603,13 +612,6 @@ func handle_dash(delta: float) -> void:
 		end_dash()
 		return
 
-	if Input.is_action_just_pressed("jump") and not has_jumped and not block_input:
-		end_dash()
-		velocity.y = jump_velocity
-		has_jumped = true 
-		was_in_air = true
-		return
-		
 	var calculated_dash_speed = target_dash_distance / dash_duration
 	velocity.x = last_facing_direction * calculated_dash_speed
 
@@ -639,7 +641,7 @@ func start_dash():
 	is_dashing = true
 	can_dash = false 
 	
-	dash_start_x = global_position.x # RESTORED THIS!
+	dash_start_x = global_position.x 
 	target_dash_distance = dash_distance_tiles * tile_size
 	dash_timer = dash_duration 
 	
