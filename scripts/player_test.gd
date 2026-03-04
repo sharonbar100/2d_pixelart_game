@@ -379,7 +379,7 @@ func apply_knockback_physics(delta: float):
 
 func die():
 	Engine.time_scale = 1.0 
-	get_tree().reload_current_scene()
+	get_tree().call_deferred("reload_current_scene")
 
 func is_ladder_at_offset(offset: Vector2) -> bool:
 	if not ladder_hitbox or not ladder_hitbox.shape: 
