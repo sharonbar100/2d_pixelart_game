@@ -21,7 +21,7 @@ var is_in_knockback = false
 @export var air_acceleration = 2500.0 
 @export var jump_velocity = -250.0 
 @export var gravity_scale = 0.85    
-@export var max_fall_speed = 380.0 # --- NEW: Caps the downward falling speed ---
+@export var max_fall_speed = 380.0 
 
 # --- Ladder Settings ---
 @export var climb_speed = 60.0 
@@ -34,24 +34,35 @@ var jumped_from_ladder = false
 # --- Ledge Grab Settings ---
 var is_hanging = false
 var ledge_drop_timer = 0.0
-@export var ledge_ray_length = 7.0
+@export var tile_size = 16.0 
+
+# NEW: How far the character reaches to find the wall. 
+# Lower this if you want to require the player to be closer to the wall.
+@export var ledge_check_distance = 8.0 
+
+# NEW: Toggle this in the inspector to see the check points visually!
+@export var debug_ledge_mode = true 
+
 @export var ledge_snap_offset_y = 13.0 
 @export var ledge_snap_offset_x = 5.0 
+@export var player_top_tile_offset = Vector2(0, -8.0)
 
 # --- Landing Sensitivity ---
 @export var shake_threshold = 500.0 
 var last_velocity_y = 0.0                     
 
 # --- Dash Settings ---
-@export var dash_speed = 288       
-@export var dash_duration = 0.25    
+@export var dash_distance_tiles = 4.0 
+@export var dash_duration = 0.25 
 @export var ground_dash_lift = -5.0 
 @export var ladder_dash_nudge = 0.3 
 @export var dash_corner_correction = 8 
 var is_dashing = false
 var can_dash = true 
 var last_facing_direction = 1.0 
-var dash_timer = 0.0
+
+var dash_start_x = 0.0
+var target_dash_distance = 0.0
 var dash_nudge_active = false 
 
 # --- Attack Settings ---
@@ -79,8 +90,6 @@ var block_input = false
 # Sensors & Physics Checkers
 @onready var main_collider = $MainCollider 
 @onready var ladder_hitbox = $LadderHitbox 
-@onready var wall_raycast = $EnvironmentChecks/WallRayCast
-@onready var ledge_raycast = $EnvironmentChecks/LedgeRayCast
 # ==========================================
 
 var all_layers: Array[TileMapLayer] = []
@@ -135,6 +144,10 @@ func _on_animation_finished():
 		enemies_hit_this_attack.clear() 
 
 func _physics_process(delta: float) -> void:
+	# Keep our debug dots updating when we flip directions
+	if debug_ledge_mode:
+		queue_redraw()
+
 	if is_invincible:
 		if Engine.time_scale > 0.1:
 			invincibility_timer -= delta
@@ -160,7 +173,6 @@ func _physics_process(delta: float) -> void:
 
 	check_ladder_overlap()
 	check_spike_overlap()
-	update_raycast_directions()
 	
 	if Input.is_action_just_pressed("attack") and not is_attacking and not is_dashing and not is_on_ladder and not is_hanging:
 		perform_attack()
@@ -189,41 +201,75 @@ func _physics_process(delta: float) -> void:
 	if is_attacking:
 		check_attack_hitbox()
 
-func update_raycast_directions():
-	if wall_raycast and ledge_raycast:
-		wall_raycast.target_position.x = ledge_ray_length * last_facing_direction
-		ledge_raycast.target_position.x = ledge_ray_length * last_facing_direction
+# --- DRAWING DEBUG DOTS ---
+func _draw():
+	if not debug_ledge_mode: 
+		return
 
+	# _draw functions work in LOCAL space. So we do not add global_position here.
+	var local_top_pos = player_top_tile_offset
+	var local_wall_pos = local_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
+	var local_above_wall_pos = local_wall_pos + Vector2(0, -tile_size)
+	var local_above_player_pos = local_top_pos + Vector2(0, -tile_size)
+
+	## Syntax: draw_circle(Position, Radius, Color)
+	#draw_circle(local_top_pos, 2.0, Color.GREEN)         # Center of player's top tile
+	#draw_circle(local_wall_pos, 2.0, Color.RED)          # Wall check point
+	#draw_circle(local_above_wall_pos, 2.0, Color.AQUA)   # Above wall check point
+	#draw_circle(local_above_player_pos, 2.0, Color.YELLOW)# Above player check point
+
+# --- TILE-BASED LEDGE GRAB HELPERS ---
+func is_solid_tile_at(pos: Vector2) -> bool:
+	for layer in all_layers:
+		if not is_instance_valid(layer): continue
+		var map_pos = layer.local_to_map(layer.to_local(pos))
+		var tile_data = layer.get_cell_tile_data(map_pos)
+		if tile_data and tile_data.get_collision_polygons_count(0) > 0:
+			return true
+	return false
+
+func get_solid_tile_center(pos: Vector2) -> Vector2:
+	for layer in all_layers:
+		if not is_instance_valid(layer): continue
+		var map_pos = layer.local_to_map(layer.to_local(pos))
+		var tile_data = layer.get_cell_tile_data(map_pos)
+		if tile_data and tile_data.get_collision_polygons_count(0) > 0:
+			return layer.to_global(layer.map_to_local(map_pos))
+	return pos
+
+# --- SIMPLIFIED LEDGE GRAB LOGIC ---
 func check_ledge_grab():
 	if is_on_floor() or velocity.y < 0 or is_on_ladder or is_overlapping_ladder or ledge_drop_timer > 0 or is_dashing:
 		return
 		
-	if wall_raycast.is_colliding() and not ledge_raycast.is_colliding():
+	# 1. Establish coordinate points
+	var player_top_pos = global_position + player_top_tile_offset
+	
+	# UPDATED: We now use ledge_check_distance instead of tile_size
+	var wall_pos = player_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
+	var above_wall_pos = wall_pos + Vector2(0, -tile_size)
+	var above_player_pos = player_top_pos + Vector2(0, -tile_size)
+	
+	# 2. Check if a wall tile actually exists
+	if not is_solid_tile_at(wall_pos):
+		return 
 		
-		var wall_normal_x = wall_raycast.get_collision_normal().x
-		if wall_normal_x != 0:
-			last_facing_direction = -sign(wall_normal_x)
+	# 3. Check for blocking tiles
+	if is_solid_tile_at(above_wall_pos) or is_solid_tile_at(above_player_pos):
+		return 
 		
-		is_hanging = true
-		has_jumped = false 
-		can_dash = true 
-		velocity = Vector2.ZERO
-		
-		var space_state = get_world_2d().direct_space_state
-		
-		var wall_collision_x = wall_raycast.get_collision_point().x
-		var cast_x = wall_collision_x + (last_facing_direction * 2.0)
-		
-		var origin = Vector2(cast_x, ledge_raycast.global_position.y)
-		var end = origin + Vector2(0, 50) 
-		
-		var query = PhysicsRayQueryParameters2D.create(origin, end)
-		query.collision_mask = wall_raycast.collision_mask
-		var result = space_state.intersect_ray(query)
-		
-		if result:
-			global_position.y = result.position.y + ledge_snap_offset_y
-			global_position.x = wall_collision_x - (last_facing_direction * ledge_snap_offset_x)
+	# If we pass the checks, safely grab!
+	is_hanging = true
+	has_jumped = false 
+	can_dash = true 
+	velocity = Vector2.ZERO
+	
+	var wall_tile_center = get_solid_tile_center(wall_pos)
+	var ledge_top_y = wall_tile_center.y - (tile_size / 2.0)
+	var wall_edge_x = wall_tile_center.x - (last_facing_direction * (tile_size / 2.0))
+	
+	global_position.y = ledge_top_y + ledge_snap_offset_y
+	global_position.x = wall_edge_x - (last_facing_direction * ledge_snap_offset_x)
 
 func handle_ledge_hang(_delta: float):
 	velocity = Vector2.ZERO 
@@ -411,8 +457,7 @@ func handle_auto_grab():
 			
 			if is_dashing:
 				is_dashing = false
-				dash_timer = 0
-
+				
 func handle_ladder_movement(delta: float) -> void:
 	var v_dir = Input.get_axis("move_up", "move_down")
 	var h_dir = Input.get_axis("move_left", "move_right")
@@ -455,7 +500,6 @@ func handle_standard_movement(delta: float) -> void:
 	if not is_on_floor():
 		velocity += gravity * delta
 		
-		# --- NEW FIX: Terminal Velocity (Max Fall Speed) ---
 		if velocity.y > max_fall_speed:
 			velocity.y = max_fall_speed
 			
@@ -500,15 +544,26 @@ func handle_standard_movement(delta: float) -> void:
 			velocity.x = move_toward(velocity.x, 0, air_acceleration * delta) 
 
 func handle_dash(delta: float) -> void:
-	dash_timer -= delta
 	velocity.y = 0
+	
+	var distance_traveled = abs(global_position.x - dash_start_x)
+	
+	if is_on_wall() or distance_traveled >= target_dash_distance:
+		if not is_on_wall():
+			global_position.x = dash_start_x + (last_facing_direction * target_dash_distance)
+			
+		end_dash()
+		return
+
+	if not Input.is_action_pressed("dash"):
+		end_dash()
+		return
+
 	if Input.is_action_just_pressed("jump") and not has_jumped and not block_input:
 		end_dash()
 		velocity.y = jump_velocity
 		has_jumped = true 
 		was_in_air = true
-		return
-	if not Input.is_action_pressed("dash") or dash_timer <= 0: end_dash()
 
 func apply_dash_corner_correction(delta: float):
 	var motion = velocity * delta
@@ -532,19 +587,26 @@ func start_dash():
 		dash_nudge_active = true
 		is_on_ladder = false
 		ladder_ignore_timer = 0.1
+		
 	is_dashing = true
 	can_dash = false 
-	dash_timer = dash_duration
+	
+	target_dash_distance = dash_distance_tiles * tile_size
+	dash_start_x = global_position.x
+	
+	var calculated_dash_speed = target_dash_distance / dash_duration
+	velocity.x = last_facing_direction * calculated_dash_speed
 	velocity.y = 0 
-	velocity.x = last_facing_direction * dash_speed
 
 func end_dash():
 	if dash_nudge_active:
 		global_position.y -= ladder_dash_nudge
 		dash_nudge_active = false
+		
 	is_dashing = false
-	dash_timer = 0
-	velocity.x = last_facing_direction * speed
+	
+	var current_input_dir = Input.get_axis("move_left", "move_right")
+	velocity.x = current_input_dir * speed
 
 func update_animations():
 	if not animator: return

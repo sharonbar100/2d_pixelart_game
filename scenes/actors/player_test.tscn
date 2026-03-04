@@ -293,16 +293,6 @@ collision_mask = 0
 shape = SubResource("CapsuleShape2D_8w5d1")
 debug_color = Color(1, 0, 0, 0.42000002)
 
-[node name="EnvironmentChecks" type="Node2D" parent="." unique_id=463034823]
-
-[node name="WallRayCast" type="RayCast2D" parent="EnvironmentChecks" unique_id=1289754759]
-position = Vector2(0, -4)
-target_position = Vector2(15, 0)
-
-[node name="LedgeRayCast" type="RayCast2D" parent="EnvironmentChecks" unique_id=502230101]
-position = Vector2(0, -18)
-target_position = Vector2(15, 0)
-
 [node name="MainCollider" type="CollisionPolygon2D" parent="." unique_id=1020284313]
 polygon = PackedVector2Array(0, -12, -3, -6, -3, 10, 0, 12, 3, 10, 3, -6)
 
