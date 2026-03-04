@@ -36,12 +36,15 @@ var is_hanging = false
 var ledge_drop_timer = 0.0
 @export var tile_size = 16.0 
 
-# NEW: How far the character reaches to find the wall. 
-# Lower this if you want to require the player to be closer to the wall.
+# NEW: How far the character reaches horizontally to find the wall. 
 @export var ledge_check_distance = 8.0 
 
+# NEW: How far the character reaches UPWARDS to find the ledge.
+# Positive number. It calculates the strict distance to the TOP of the ledge now.
+@export var ledge_check_upward_reach = 8.0 
+
 # NEW: Toggle this in the inspector to see the check points visually!
-@export var debug_ledge_mode = true 
+@export var debug_ledge_mode = false 
 
 @export var ledge_snap_offset_y = 13.0 
 @export var ledge_snap_offset_x = 5.0 
@@ -144,7 +147,6 @@ func _on_animation_finished():
 		enemies_hit_this_attack.clear() 
 
 func _physics_process(delta: float) -> void:
-	# Keep our debug dots updating when we flip directions
 	if debug_ledge_mode:
 		queue_redraw()
 
@@ -206,17 +208,24 @@ func _draw():
 	if not debug_ledge_mode: 
 		return
 
-	# _draw functions work in LOCAL space. So we do not add global_position here.
 	var local_top_pos = player_top_tile_offset
-	var local_wall_pos = local_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
-	var local_above_wall_pos = local_wall_pos + Vector2(0, -tile_size)
-	var local_above_player_pos = local_top_pos + Vector2(0, -tile_size)
+	
+	# Create a visual line showing exactly where the player reaches
+	var local_wall_base = local_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
+	var local_wall_top = local_wall_base + Vector2(0, -ledge_check_upward_reach)
 
-	## Syntax: draw_circle(Position, Radius, Color)
-	#draw_circle(local_top_pos, 2.0, Color.GREEN)         # Center of player's top tile
-	#draw_circle(local_wall_pos, 2.0, Color.RED)          # Wall check point
-	#draw_circle(local_above_wall_pos, 2.0, Color.AQUA)   # Above wall check point
-	#draw_circle(local_above_player_pos, 2.0, Color.YELLOW)# Above player check point
+	# Draw the "Reach Zone" line
+	draw_line(local_wall_base, local_wall_top, Color.RED, 2.0)
+	
+	# Draw dots at the top and bottom of the reach zone
+	draw_circle(local_wall_base, 2.0, Color.RED)
+	draw_circle(local_wall_top, 2.0, Color.ORANGE)
+
+	# Draw the head-bonk safety check dot above the player
+	var local_above_player_pos = local_top_pos + Vector2(0, -tile_size)
+	draw_circle(local_above_player_pos, 2.0, Color.YELLOW)
+	
+	draw_circle(local_top_pos, 2.0, Color.GREEN)
 
 # --- TILE-BASED LEDGE GRAB HELPERS ---
 func is_solid_tile_at(pos: Vector2) -> bool:
@@ -237,35 +246,65 @@ func get_solid_tile_center(pos: Vector2) -> Vector2:
 			return layer.to_global(layer.map_to_local(map_pos))
 	return pos
 
-# --- SIMPLIFIED LEDGE GRAB LOGIC ---
+# --- STRICT LEDGE GRAB LOGIC ---
 func check_ledge_grab():
 	if is_on_floor() or velocity.y < 0 or is_on_ladder or is_overlapping_ladder or ledge_drop_timer > 0 or is_dashing:
 		return
 		
-	# 1. Establish coordinate points
 	var player_top_pos = global_position + player_top_tile_offset
+	var wall_x = player_top_pos.x + (last_facing_direction * ledge_check_distance)
 	
-	# UPDATED: We now use ledge_check_distance instead of tile_size
-	var wall_pos = player_top_pos + Vector2(last_facing_direction * ledge_check_distance, 0)
-	var above_wall_pos = wall_pos + Vector2(0, -tile_size)
+	# 1. Sample 3 points along the "Reach Zone" line from TOP to BOTTOM
+	# This ensures we find the highest ledge we can touch without skipping over it.
+	var hit_pos = Vector2.ZERO
+	var tile_hit = false
+	
+	var check_points = [
+		Vector2(wall_x, player_top_pos.y - ledge_check_upward_reach), # Max upward reach
+		Vector2(wall_x, player_top_pos.y - (ledge_check_upward_reach / 2.0)), # Middle
+		Vector2(wall_x, player_top_pos.y) # Base player level
+	]
+	
+	for pt in check_points:
+		if is_solid_tile_at(pt):
+			hit_pos = pt
+			tile_hit = true
+			break # Found the highest reachable tile
+			
+	if not tile_hit:
+		return 
+		
+	# 2. Find the exact mathematical bounds of the tile we hit
+	var wall_tile_center = get_solid_tile_center(hit_pos)
+	var ledge_top_y = wall_tile_center.y - (tile_size / 2.0)
+	
+	# 3. STRICT VERTICAL DISTANCE CHECK
+	var vertical_distance_to_top = player_top_pos.y - ledge_top_y
+	
+	# If the actual top of the ledge is further up than our max reach, deny the grab!
+	if vertical_distance_to_top > ledge_check_upward_reach:
+		return 
+		
+	# Prevent grabbing if we somehow fell slightly past it (too high above it)
+	if vertical_distance_to_top < -4.0:
+		return
+		
+	# 4. Check if the space directly above the ledge is empty
+	var directly_above_ledge = Vector2(wall_tile_center.x, ledge_top_y - (tile_size / 2.0))
+	if is_solid_tile_at(directly_above_ledge):
+		return # There is a block on top of this one, so it's a sheer wall, not a ledge.
+		
+	# 5. Check if the space above the player is empty (head bonk check)
 	var above_player_pos = player_top_pos + Vector2(0, -tile_size)
-	
-	# 2. Check if a wall tile actually exists
-	if not is_solid_tile_at(wall_pos):
+	if is_solid_tile_at(above_player_pos):
 		return 
 		
-	# 3. Check for blocking tiles
-	if is_solid_tile_at(above_wall_pos) or is_solid_tile_at(above_player_pos):
-		return 
-		
-	# If we pass the checks, safely grab!
+	# Passed all checks! Grab the ledge.
 	is_hanging = true
 	has_jumped = false 
 	can_dash = true 
 	velocity = Vector2.ZERO
 	
-	var wall_tile_center = get_solid_tile_center(wall_pos)
-	var ledge_top_y = wall_tile_center.y - (tile_size / 2.0)
 	var wall_edge_x = wall_tile_center.x - (last_facing_direction * (tile_size / 2.0))
 	
 	global_position.y = ledge_top_y + ledge_snap_offset_y
