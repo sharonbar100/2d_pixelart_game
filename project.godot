@@ -13,7 +13,7 @@ config_version=5
 config/name="2d_pixelart_game"
 run/main_scene="uid://cynvpisfocd06"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="uid://dvbchcm0oiipm"
 
 [autoload]
 

@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://b4jxkpywmi07c" path="res://scripts/canvas_layer.gd" id="3_6xh4u"]
 [ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemy.tscn" id="4_cyt5c"]
 [ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="5_48ne7"]
+[ext_resource type="PackedScene" uid="uid://dhjv6xcw0hjbm" path="res://scenes/hazards/kill_zone.tscn" id="6_6xh4u"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("1_v45ci")
@@ -177,3 +178,7 @@ offset_bottom = 40.0
 position = Vector2(144, -53)
 
 [node name="TouchControls" parent="." unique_id=1918086798 instance=ExtResource("5_48ne7")]
+
+[node name="KillZone" parent="." unique_id=1036787301 instance=ExtResource("6_6xh4u")]
+position = Vector2(359.99997, 200)
+scale = Vector2(29.200003, 1)

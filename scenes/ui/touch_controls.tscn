@@ -18,6 +18,7 @@ up_left_button = NodePath("Control/BtnUpLeft")
 up_right_button = NodePath("Control/BtnUpRight")
 
 [node name="Control" type="Control" parent="." unique_id=908620997]
+modulate = Color(1, 1, 1, 0.623)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Menu" type="TouchScreenButton" parent="Control" unique_id=1180108849]
-position = Vector2(2, 2)
+position = Vector2(286, 2)
 scale = Vector2(2, 2)
 texture_normal = ExtResource("2_esiwu")
 action = "pause_game"

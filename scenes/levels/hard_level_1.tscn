@@ -296,6 +296,10 @@ target = NodePath("../Player2")
 
 [node name="KillZone" parent="." unique_id=1036787301 instance=ExtResource("7_yh0hp")]
 position = Vector2(906, 318)
-scale = Vector2(25.20717, 1.8976558)
+scale = Vector2(57.15192, 1.2036954)
+
+[node name="KillZone2" parent="." unique_id=1540124535 instance=ExtResource("7_yh0hp")]
+position = Vector2(1343, -319)
+scale = Vector2(12.446643, -1.9679705)
 
 [node name="TouchControls" parent="." unique_id=1918086798 instance=ExtResource("8_qkywy")]
