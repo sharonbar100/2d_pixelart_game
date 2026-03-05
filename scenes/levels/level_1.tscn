@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemy.tscn" id="4_dga24"]
 [ext_resource type="PackedScene" uid="uid://73e84pn8oi6k" path="res://scenes/interactables/finish_flag.tscn" id="5_qxy0u"]
 [ext_resource type="Script" uid="uid://n3717dx3tkxc" path="res://scripts/pro_camera_2d.gd" id="6_sk5k4"]
+[ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="7_oc4kc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sk5k4"]
 texture = ExtResource("1_oc4kc")
@@ -534,3 +535,5 @@ next_level_scene = "uid://cynvpisfocd06"
 offset = Vector2(0, 10)
 script = ExtResource("6_sk5k4")
 target = NodePath("../Player2")
+
+[node name="TouchControls" parent="." unique_id=1918086798 instance=ExtResource("7_oc4kc")]

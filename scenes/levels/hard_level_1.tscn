@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://73e84pn8oi6k" path="res://scenes/interactables/finish_flag.tscn" id="5_apesj"]
 [ext_resource type="Script" uid="uid://n3717dx3tkxc" path="res://scripts/pro_camera_2d.gd" id="6_jemu1"]
 [ext_resource type="PackedScene" uid="uid://dhjv6xcw0hjbm" path="res://scenes/hazards/kill_zone.tscn" id="7_yh0hp"]
+[ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="8_qkywy"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_vwhr5"]
 diffuse_texture = ExtResource("2_qkywy")
@@ -296,3 +297,5 @@ target = NodePath("../Player2")
 [node name="KillZone" parent="." unique_id=1036787301 instance=ExtResource("7_yh0hp")]
 position = Vector2(906, 318)
 scale = Vector2(25.20717, 1.8976558)
+
+[node name="TouchControls" parent="." unique_id=1918086798 instance=ExtResource("8_qkywy")]

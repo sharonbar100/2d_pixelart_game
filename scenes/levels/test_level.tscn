@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://crmolvphbk3lv" path="res://scenes/actors/player.tscn" id="2_48ne7"]
 [ext_resource type="Script" uid="uid://b4jxkpywmi07c" path="res://scripts/canvas_layer.gd" id="3_6xh4u"]
 [ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemy.tscn" id="4_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="5_48ne7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1bvp3"]
 texture = ExtResource("1_v45ci")
@@ -174,3 +175,5 @@ offset_bottom = 40.0
 
 [node name="Enemy" parent="." unique_id=529442611 instance=ExtResource("4_cyt5c")]
 position = Vector2(144, -53)
+
+[node name="TouchControls" parent="." unique_id=1918086798 instance=ExtResource("5_48ne7")]

@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://0gbo76fibve1"]
+
+[ext_resource type="Script" uid="uid://cp8drbrm7bep8" path="res://scripts/touch_controls.gd" id="1_0l8t7"]
+[ext_resource type="Texture2D" uid="uid://d26pi1l60o3tq" path="res://assets/sprites/ui/touch_controls/leftarrow.png" id="1_tqecv"]
+[ext_resource type="Texture2D" uid="uid://dyxq6xotr2oea" path="res://assets/sprites/ui/touch_controls/menubutton.png" id="2_esiwu"]
+[ext_resource type="Texture2D" uid="uid://c1l06c6uovlxe" path="res://assets/sprites/ui/touch_controls/rightarrow.png" id="2_nk8ty"]
+[ext_resource type="Texture2D" uid="uid://epag5g86h8uw" path="res://assets/sprites/ui/touch_controls/downarrow.png" id="3_sayjt"]
+[ext_resource type="Texture2D" uid="uid://dxdwtparf8elh" path="res://assets/sprites/ui/touch_controls/jumpbutton.png" id="3_vs7rr"]
+[ext_resource type="Texture2D" uid="uid://c1u1jtjvwmlco" path="res://assets/sprites/ui/touch_controls/dashbutton.png" id="4_0l8t7"]
+[ext_resource type="Texture2D" uid="uid://dl3hr1rpkjueg" path="res://assets/sprites/ui/touch_controls/uparrow.png" id="4_vs7rr"]
+[ext_resource type="Texture2D" uid="uid://dprb21bf5vy8a" path="res://assets/sprites/ui/touch_controls/uprightbutton.png" id="6_pjcks"]
+[ext_resource type="Texture2D" uid="uid://chi55mels1bsa" path="res://assets/sprites/ui/touch_controls/upleftbutton.png" id="7_gxb8u"]
+[ext_resource type="Texture2D" uid="uid://b0qrao1l3iwpw" path="res://assets/sprites/ui/touch_controls/attackbutton.png" id="9_oc0ds"]
+
+[node name="TouchControls" type="CanvasLayer" unique_id=1918086798 node_paths=PackedStringArray("up_left_button", "up_right_button")]
+script = ExtResource("1_0l8t7")
+up_left_button = NodePath("Control/BtnUpLeft")
+up_right_button = NodePath("Control/BtnUpRight")
+
+[node name="Control" type="Control" parent="." unique_id=908620997]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Menu" type="TouchScreenButton" parent="Control" unique_id=1180108849]
+position = Vector2(2, 2)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("2_esiwu")
+action = "pause_game"
+
+[node name="Left" type="TouchScreenButton" parent="Control" unique_id=866038871]
+position = Vector2(2, 146)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("1_tqecv")
+action = "move_left"
+
+[node name="Right" type="TouchScreenButton" parent="Control" unique_id=479302324]
+position = Vector2(70, 146)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("2_nk8ty")
+action = "move_right"
+
+[node name="Up" type="TouchScreenButton" parent="Control" unique_id=430325389]
+position = Vector2(36, 112)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("4_vs7rr")
+action = "move_up"
+
+[node name="BtnUpRight" type="TouchScreenButton" parent="Control" unique_id=1687852735]
+position = Vector2(70, 112)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("6_pjcks")
+
+[node name="BtnUpLeft" type="TouchScreenButton" parent="Control" unique_id=1027479172]
+position = Vector2(2, 112)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("7_gxb8u")
+
+[node name="Down" type="TouchScreenButton" parent="Control" unique_id=589899299]
+position = Vector2(36, 146)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("3_sayjt")
+action = "move_down"
+
+[node name="Jump" type="TouchScreenButton" parent="Control" unique_id=158058026]
+position = Vector2(252, 146)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("3_vs7rr")
+action = "jump"
+
+[node name="Dash" type="TouchScreenButton" parent="Control" unique_id=971233656]
+position = Vector2(286, 146)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("4_0l8t7")
+action = "dash"
+
+[node name="Attack" type="TouchScreenButton" parent="Control" unique_id=824193295]
+position = Vector2(269, 112)
+scale = Vector2(2, 2)
+texture_normal = ExtResource("9_oc0ds")
+action = "attack"
