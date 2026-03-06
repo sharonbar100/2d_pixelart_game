@@ -16,3 +16,4 @@ data_*/
 mono_crash.*.json
 exports/GoodKnight.exe
 exports/PlatTheFormer.exe
+/exports
