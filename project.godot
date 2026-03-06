@@ -18,7 +18,6 @@ config/icon="uid://dvbchcm0oiipm"
 [autoload]
 
 GlobalPause="*uid://jyrhf0bjyerj"
-GlobalHealthBar="*uid://bkb1kubyal41r"
 CrtFilter="*uid://8xord63246dk"
 
 [display]

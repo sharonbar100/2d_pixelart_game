@@ -1,0 +1,134 @@
+[gd_scene format=3 uid="uid://c31fo72ynawpb"]
+
+[ext_resource type="Script" uid="uid://batl3bq2goagr" path="res://scripts/components/GameEntity.gd" id="1_qkj82"]
+[ext_resource type="Texture2D" uid="uid://jtnfifmggvq7" path="res://assets/sprites/enemies/slime_green.png" id="2_qi2p4"]
+[ext_resource type="Script" uid="uid://c7ygsei8n7w00" path="res://scripts/components/MovementComponent.gd" id="3_3mmye"]
+[ext_resource type="Script" uid="uid://c7c3v74igl6e4" path="res://scripts/components/AttackComponent.gd" id="4_h7i6x"]
+[ext_resource type="Script" uid="uid://b5q3c5emyfv7h" path="res://scripts/components/DashComponent.gd" id="5_17mxg"]
+[ext_resource type="Script" uid="uid://bm4ks5gksd7v4" path="res://scripts/components/HealthComponent.gd" id="6_833af"]
+[ext_resource type="Script" uid="uid://d0b7p6mi0w108" path="res://scripts/components/KnockbackComponent.gd" id="7_cdksu"]
+[ext_resource type="Script" uid="uid://c5vcy6kuf0sqh" path="res://scripts/components/LadderComponent.gd" id="8_jg7v1"]
+[ext_resource type="Script" uid="uid://dw0infuklharq" path="res://scripts/components/AnimationComponent.gd" id="9_hfgxc"]
+[ext_resource type="Script" uid="uid://bm42u1genesif" path="res://scripts/components/LedgeGrabComponent.gd" id="10_gprx2"]
+[ext_resource type="Script" uid="uid://dpgp5b13baubs" path="res://scripts/components/JumpComponent.gd" id="11_jq8pn"]
+[ext_resource type="Script" uid="uid://4tljvkghg6dg" path="res://scripts/components/ContactDamageComponent.gd" id="12_jxyl7"]
+[ext_resource type="Script" uid="uid://byjatkwprm8mn" path="res://scripts/components/PatrolAIComponent.gd" id="13_dxe2w"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iifgy"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(0, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_epg4t"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(24, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3yqyl"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(48, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wujgv"]
+atlas = ExtResource("2_qi2p4")
+region = Rect2(72, 24, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hb8ge"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iifgy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_epg4t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3yqyl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wujgv")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gyqm"]
+size = Vector2(10, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3mmye"]
+size = Vector2(10, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e1ltt"]
+size = Vector2(10, 10)
+
+[node name="Enemy" type="CharacterBody2D" unique_id=529442611 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "movement_component", "attack_component", "health_component", "knockback_component", "animation_component")]
+collision_layer = 4
+script = ExtResource("1_qkj82")
+animator = NodePath("AnimatedSprite2D")
+main_collider = NodePath("MainCollider")
+attack_area = NodePath("HitboxArea")
+hurtbox_area = NodePath("HurtboxArea")
+movement_component = NodePath("Components/PatrolAIComponent")
+attack_component = NodePath("Components/ContactDamageComponent")
+health_component = NodePath("Components/HealthComponent")
+knockback_component = NodePath("Components/KnockbackComponent")
+animation_component = NodePath("Components/AnimationComponent")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1717993725]
+sprite_frames = SubResource("SpriteFrames_hb8ge")
+animation = &"walk"
+
+[node name="MainCollider" type="CollisionShape2D" parent="." unique_id=44345137]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_4gyqm")
+
+[node name="HurtboxArea" type="Area2D" parent="." unique_id=787376190]
+collision_layer = 4
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtboxArea" unique_id=1320874624]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_3mmye")
+
+[node name="HitboxArea" type="Area2D" parent="." unique_id=1476136627]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxArea" unique_id=196636797]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_e1ltt")
+
+[node name="Components" type="Node" parent="." unique_id=1897103276]
+
+[node name="MovementComponent" type="Node" parent="Components" unique_id=1617778763]
+script = ExtResource("3_3mmye")
+
+[node name="AttackComponent" type="Node" parent="Components" unique_id=979446633]
+script = ExtResource("4_h7i6x")
+
+[node name="DashComponent" type="Node" parent="Components" unique_id=1236979585]
+script = ExtResource("5_17mxg")
+
+[node name="HealthComponent" type="Node" parent="Components" unique_id=1299954559]
+script = ExtResource("6_833af")
+max_health = 2
+invincibility_duration = 0.0
+
+[node name="KnockbackComponent" type="Node" parent="Components" unique_id=1449864785]
+script = ExtResource("7_cdksu")
+
+[node name="LadderComponent" type="Node" parent="Components" unique_id=1922562239]
+script = ExtResource("8_jg7v1")
+
+[node name="AnimationComponent" type="Node" parent="Components" unique_id=1578416350]
+script = ExtResource("9_hfgxc")
+
+[node name="LedgeGrabComponent" type="Node" parent="Components" unique_id=41823940]
+script = ExtResource("10_gprx2")
+
+[node name="JumpComponent" type="Node" parent="Components" unique_id=34498809]
+script = ExtResource("11_jq8pn")
+
+[node name="ContactDamageComponent" type="Node" parent="Components" unique_id=936192877]
+script = ExtResource("12_jxyl7")
+
+[node name="PatrolAIComponent" type="Node" parent="Components" unique_id=694085020]
+script = ExtResource("13_dxe2w")

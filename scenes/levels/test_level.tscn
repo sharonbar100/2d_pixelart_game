@@ -1,9 +1,9 @@
 [gd_scene format=4 uid="uid://ccvvgb8qnnmjt"]
 
 [ext_resource type="Texture2D" uid="uid://b05qqjsbuty2h" path="res://assets/sprites/environment/world_tileset.png" id="1_v45ci"]
-[ext_resource type="PackedScene" uid="uid://crmolvphbk3lv" path="res://scenes/actors/player.tscn" id="2_48ne7"]
+[ext_resource type="PackedScene" uid="uid://crmolvphbk3lv" path="res://scenes/actors/players/player_old.tscn" id="2_48ne7"]
 [ext_resource type="Script" uid="uid://b4jxkpywmi07c" path="res://scripts/canvas_layer.gd" id="3_6xh4u"]
-[ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemy.tscn" id="4_cyt5c"]
+[ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemies/enemy.tscn" id="4_cyt5c"]
 [ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="5_48ne7"]
 [ext_resource type="PackedScene" uid="uid://dhjv6xcw0hjbm" path="res://scenes/hazards/kill_zone.tscn" id="6_6xh4u"]
 

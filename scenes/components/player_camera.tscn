@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dry4shk8uj32d"]
+
+[ext_resource type="Script" uid="uid://n3717dx3tkxc" path="res://scripts/player_camera.gd" id="1_iv32f"]
+
+[node name="PlayerCamera" type="Camera2D" unique_id=449279207 node_paths=PackedStringArray("hearts_container")]
+script = ExtResource("1_iv32f")
+hearts_container = NodePath("CanvasLayer/HBoxContainer")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=949182072]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer" unique_id=563719440]
+offset_right = 40.0
+offset_bottom = 40.0

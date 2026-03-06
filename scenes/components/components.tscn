@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://cotl6lp6t0bqf"]
+
+[ext_resource type="Script" uid="uid://c7c3v74igl6e4" path="res://scripts/components/AttackComponent.gd" id="1_t60xm"]
+[ext_resource type="Script" uid="uid://b5q3c5emyfv7h" path="res://scripts/components/DashComponent.gd" id="2_4c6x6"]
+[ext_resource type="Script" uid="uid://bm4ks5gksd7v4" path="res://scripts/components/HealthComponent.gd" id="3_lykv4"]
+[ext_resource type="Script" uid="uid://d0b7p6mi0w108" path="res://scripts/components/KnockbackComponent.gd" id="4_v0j40"]
+[ext_resource type="Script" uid="uid://c5vcy6kuf0sqh" path="res://scripts/components/LadderComponent.gd" id="5_xjr6x"]
+[ext_resource type="Script" uid="uid://dw0infuklharq" path="res://scripts/components/AnimationComponent.gd" id="6_rrelj"]
+[ext_resource type="Script" uid="uid://c7ygsei8n7w00" path="res://scripts/components/MovementComponent.gd" id="7_p8x8l"]
+[ext_resource type="Script" uid="uid://bm42u1genesif" path="res://scripts/components/LedgeGrabComponent.gd" id="8_k3ypa"]
+[ext_resource type="Script" uid="uid://dpgp5b13baubs" path="res://scripts/components/JumpComponent.gd" id="9_3sh67"]
+[ext_resource type="Script" uid="uid://4tljvkghg6dg" path="res://scripts/components/ContactDamageComponent.gd" id="10_lykv4"]
+[ext_resource type="Script" uid="uid://byjatkwprm8mn" path="res://scripts/components/PatrolAIComponent.gd" id="11_v0j40"]
+
+[node name="Components" type="Node" unique_id=408434574]
+
+[node name="MovementComponent" type="Node" parent="." unique_id=654663689]
+script = ExtResource("7_p8x8l")
+
+[node name="AttackComponent" type="Node" parent="." unique_id=979957604]
+script = ExtResource("1_t60xm")
+attack_lunge_speed = 10.0
+
+[node name="DashComponent" type="Node" parent="." unique_id=999318695]
+script = ExtResource("2_4c6x6")
+
+[node name="HealthComponent" type="Node" parent="." unique_id=1311373282]
+script = ExtResource("3_lykv4")
+
+[node name="KnockbackComponent" type="Node" parent="." unique_id=355587675]
+script = ExtResource("4_v0j40")
+
+[node name="LadderComponent" type="Node" parent="." unique_id=1039694195]
+script = ExtResource("5_xjr6x")
+
+[node name="AnimationComponent" type="Node" parent="." unique_id=741148992]
+script = ExtResource("6_rrelj")
+
+[node name="LedgeGrabComponent" type="Node" parent="." unique_id=1665609967]
+script = ExtResource("8_k3ypa")
+
+[node name="JumpComponent" type="Node" parent="." unique_id=1979275437]
+script = ExtResource("9_3sh67")
+
+[node name="ContactDamageComponent" type="Node" parent="." unique_id=889265445]
+script = ExtResource("10_lykv4")
+
+[node name="PatrolAIComponent" type="Node" parent="." unique_id=851235948]
+script = ExtResource("11_v0j40")
