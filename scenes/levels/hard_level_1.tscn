@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://ca3o40yy78x08"]
 
+[ext_resource type="Texture2D" uid="uid://buxg8ug0pn5b" path="res://assets/sprites/environment/background_night.png" id="1_6dmac"]
 [ext_resource type="Texture2D" uid="uid://btjcxaq8me204" path="res://assets/sprites/environment/world_spritesheet_norm.png" id="2_6dmac"]
 [ext_resource type="Texture2D" uid="uid://bm2fegbg42oab" path="res://assets/sprites/environment/world_spritesheet.png" id="2_qkywy"]
 [ext_resource type="Texture2D" uid="uid://6fq51yolr8dk" path="res://assets/sprites/interactables/interactables.png" id="2_vwhr5"]
@@ -14,7 +15,7 @@
 diffuse_texture = ExtResource("2_qkywy")
 normal_texture = ExtResource("2_6dmac")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vwhr5"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6dmac"]
 texture = SubResource("CanvasTexture_vwhr5")
 0:0/0 = 0
 1:0/0 = 0
@@ -36,7 +37,7 @@ texture = SubResource("CanvasTexture_vwhr5")
 4:1/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_oc4kc"]
-sources/1 = SubResource("TileSetAtlasSource_vwhr5")
+sources/1 = SubResource("TileSetAtlasSource_6dmac")
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_vwhr5"]
 polygon = PackedVector2Array(6, 4, 6, -4, -6, -4, -6, 4)
@@ -211,12 +212,12 @@ custom_data_layer_1/name = "is_spike"
 custom_data_layer_1/type = 1
 sources/0 = SubResource("TileSetAtlasSource_oc4kc")
 
-[sub_resource type="Gradient" id="Gradient_iav0o"]
+[sub_resource type="Gradient" id="Gradient_apesj"]
 offsets = PackedFloat32Array(0.18867925, 0.6792453)
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_dnkej"]
-gradient = SubResource("Gradient_iav0o")
+gradient = SubResource("Gradient_apesj")
 width = 300
 height = 300
 fill = 1
@@ -225,7 +226,18 @@ fill_from = Vector2(0.5, 0.5)
 [node name="level_1" type="Node2D" unique_id=1460821573]
 metadata/_edit_horizontal_guides_ = [-67.0]
 
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1952203035]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=2063726352]
+motion_scale = Vector2(0.1, 0.1)
+motion_mirroring = Vector2(320, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer" unique_id=612439144]
+texture = ExtResource("1_6dmac")
+offset = Vector2(160, 90)
+
 [node name="ColorRect" type="ColorRect" parent="." unique_id=959069516]
+modulate = Color(1, 1, 1, 0.8627451)
 light_mask = 0
 anchors_preset = 15
 anchor_right = 1.0

@@ -32,6 +32,11 @@ layout_mode = 2
 size_flags_vertical = 3
 text = "Hard Level 1"
 
+[node name="Hard_Level_2" type="Button" parent="VBoxContainer" unique_id=2085604241]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Hard Level 2"
+
 [node name="Test_Level" type="Button" parent="VBoxContainer" unique_id=1191685865]
 layout_mode = 2
 size_flags_vertical = 3
@@ -43,5 +48,6 @@ text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/Level_1" to="." method="_on_level_1_pressed"]
 [connection signal="pressed" from="VBoxContainer/Hard_Level_1" to="." method="_on_hard_level_1_pressed"]
+[connection signal="pressed" from="VBoxContainer/Hard_Level_2" to="." method="_on_hard_level_2_pressed"]
 [connection signal="pressed" from="VBoxContainer/Test_Level" to="." method="_on_test_level_pressed"]
 [connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]

@@ -13,8 +13,16 @@ extends Camera2D
 @export var jump_look_up: float = -100.0 
 @export var vertical_shift_speed: float = 5.0 
 
+@export_group("Peeking")
+@export var peek_up_distance: float = -50.0
+@export var peek_down_distance: float = 50.0
+@export var peek_left_distance: float = -50.0
+@export var peek_right_distance: float = 50.0
+@export var peek_delay: float = 0.7 # How long to hold before camera pans
+@export var peek_pan_speed: float = 130.0
+
 @export_group("Health UI Settings")
-@export var hearts_container: HBoxContainer # Assign the HBoxContainer child here
+@export var hearts_container: HBoxContainer 
 @export var heart_texture: Texture2D = preload("res://assets/sprites/ui/healthbar_heart.png")
 @export var heart_size := Vector2(10, 10)
 @export var empty_heart_modulate := Color(0.2, 0.2, 0.2, 0.6)
@@ -24,6 +32,10 @@ var current_look_ahead_x: float = 0.0
 var current_vertical_offset: float = 0.0 
 var shake_amount: float = 0.0
 var default_offset: Vector2 = offset
+
+# Peeking variables
+var peek_timer: float = 0.0
+var current_peek_offset: Vector2 = Vector2.ZERO
 
 func _ready():
 	set_as_top_level(true) 
@@ -41,18 +53,15 @@ func _connect_to_target_health():
 	var hc = target.health_component
 	if hc:
 		hc.health_changed.connect(_update_health_ui)
-		# Initialize display
 		_update_health_ui(hc.current_health, hc.max_health)
 		hearts_container.get_parent().visible = true
 
 func _update_health_ui(current: int, max_hp: int):
 	if not hearts_container: return
 	
-	# Clear old hearts
 	for child in hearts_container.get_children():
 		child.queue_free()
 	
-	# Create new hearts
 	for i in range(max_hp):
 		var rect = TextureRect.new()
 		rect.texture = heart_texture
@@ -84,8 +93,45 @@ func _physics_process(delta):
 		var target_look_ahead_x = look_ahead_distance * target.last_facing_direction
 		current_look_ahead_x = move_toward(current_look_ahead_x, target_look_ahead_x, look_ahead_speed * delta)
 		target_position.x += current_look_ahead_x
+		
+	# 3. Peeking (Using get_real_velocity() to ignore component overrides)
+	var target_peek := Vector2.ZERO
+	var is_peeking_input = false
 	
-	# 3. Lerp & Snap
+	var current_vel = target.get_real_velocity() if target.has_method("get_real_velocity") else target.get("velocity")
+	
+	# If the physical resulting velocity is near zero, the player is effectively stopped
+	if current_vel != null and abs(current_vel.x) < 5.0 and abs(current_vel.y) < 5.0:
+		if Input.is_action_pressed("ui_up"):
+			is_peeking_input = true
+			peek_timer += delta
+			if peek_timer >= peek_delay: target_peek.y = peek_up_distance
+			
+		elif Input.is_action_pressed("ui_down"):
+			is_peeking_input = true
+			peek_timer += delta
+			if peek_timer >= peek_delay: target_peek.y = peek_down_distance
+			
+		elif Input.is_action_pressed("ui_left"):
+			is_peeking_input = true
+			peek_timer += delta
+			if peek_timer >= peek_delay: target_peek.x = peek_left_distance
+			
+		elif Input.is_action_pressed("ui_right"):
+			is_peeking_input = true
+			peek_timer += delta
+			if peek_timer >= peek_delay: target_peek.x = peek_right_distance
+
+	if not is_peeking_input:
+		peek_timer = 0.0 
+		
+	# Apply peek offsets
+	current_peek_offset.x = move_toward(current_peek_offset.x, target_peek.x, peek_pan_speed * delta)
+	current_peek_offset.y = move_toward(current_peek_offset.y, target_peek.y, peek_pan_speed * delta)
+	
+	target_position += current_peek_offset
+	
+	# 4. Lerp & Snap
 	global_position = global_position.lerp(target_position, smooth_speed * delta)
 	global_position = global_position.round()
 
