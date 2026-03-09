@@ -1,8 +1,84 @@
-[gd_scene format=3 uid="uid://cynvpisfocd06"]
+[gd_scene format=4 uid="uid://dpvdlsuumbluq"]
 
-[ext_resource type="Script" uid="uid://ct5fq5eqderve" path="res://scripts/main_menu.gd" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://uofbr1bve8dr" path="res://scripts/main_menu.gd" id="1_7qjw6"]
+[ext_resource type="Texture2D" uid="uid://bm2fegbg42oab" path="res://assets/sprites/environment/world_spritesheet.png" id="2_b4a2u"]
+[ext_resource type="Texture2D" uid="uid://btjcxaq8me204" path="res://assets/sprites/environment/world_spritesheet_norm.png" id="3_pb5y7"]
+[ext_resource type="Texture2D" uid="uid://du6v3dsd0bqm8" path="res://assets/sprites/environment/main_menu_logo.png" id="4_n150m"]
+[ext_resource type="Texture2D" uid="uid://cio1arq3rvljp" path="res://assets/sprites/environment/main_menu_buttons.png" id="5_ttnvy"]
+[ext_resource type="Texture2D" uid="uid://bkx04mt8iom2k" path="res://assets/sprites/environment/button.png" id="6_eka5q"]
+[ext_resource type="Texture2D" uid="uid://cj0jcxffaf104" path="res://assets/sprites/environment/button_hover.png" id="7_3rl1q"]
+[ext_resource type="AudioStream" uid="uid://oaeywikknrig" path="res://assets/tracks/main_menu_track01.wav" id="8_y5nvd"]
 
-[node name="MainMenu" type="Control" unique_id=697235440]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p22pe"]
+texture = ExtResource("2_b4a2u")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_cyfno"]
+sources/0 = SubResource("TileSetAtlasSource_p22pe")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_vwhr5"]
+diffuse_texture = ExtResource("2_b4a2u")
+normal_texture = ExtResource("3_pb5y7")
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h7jwc"]
+texture = SubResource("CanvasTexture_vwhr5")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+5:1/0 = 0
+5:0/0 = 0
+4:0/0 = 0
+3:0/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_p2mug"]
+sources/1 = SubResource("TileSetAtlasSource_h7jwc")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cyfno"]
+texture = ExtResource("6_eka5q")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qf6nx"]
+texture = ExtResource("7_3rl1q")
+
+[sub_resource type="Gradient" id="Gradient_iav0o"]
+offsets = PackedFloat32Array(0.18867925, 0.6792453)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rqde2"]
+gradient = SubResource("Gradient_iav0o")
+width = 300
+height = 300
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="MainMenu" type="Control" unique_id=697235440 node_paths=PackedStringArray("first_button")]
 custom_minimum_size = Vector2(320, 180)
 layout_mode = 3
 anchors_preset = 15
@@ -10,44 +86,110 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_06t4h")
+script = ExtResource("1_7qjw6")
+first_button = NodePath("CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Level_1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=108331812]
-clip_contents = true
-custom_minimum_size = Vector2(320, 180)
-layout_mode = 1
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=973599187]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=478755945]
+motion_mirroring = Vector2(320, 176)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="ParallaxBackground/ParallaxLayer" unique_id=1713015728]
+visible = false
+tile_map_data = PackedByteArray("AAAAAAoAAAAEAAEAAAAAAAkAAAAEAAEAAAAAAAgAAAAEAAEAAAAAAAcAAAAEAAEAAAAAAAYAAAAEAAEAAAAAAAUAAAAEAAEAAAAAAAQAAAAEAAEAAAAAAAMAAAAEAAEAAAAAAAIAAAAEAAEAAAAAAAEAAAAEAAEAAAAAAAAAAAAEAAEAAAABAAAAAAAEAAEAAAACAAAAAAAEAAEAAAADAAAAAAAEAAEAAAAEAAAAAAAEAAEAAAAFAAAAAAAEAAEAAAAGAAAAAAAEAAEAAAAHAAAAAAAEAAEAAAAIAAAAAAAEAAEAAAAJAAAAAAAEAAEAAAAKAAAAAAAEAAEAAAALAAAAAAAEAAEAAAAMAAAAAAAEAAEAAAANAAAAAAAEAAEAAAAOAAAAAAAEAAEAAAAPAAAAAAAEAAEAAAAQAAAAAAAEAAEAAAARAAAAAAAEAAEAAAASAAAAAAAEAAEAAAATAAAAAAAEAAEAAAATAAEAAAAEAAEAAAATAAIAAAAEAAEAAAATAAMAAAAEAAEAAAATAAQAAAAEAAEAAAATAAUAAAAEAAEAAAATAAYAAAAEAAEAAAATAAcAAAAEAAEAAAATAAgAAAAEAAEAAAATAAkAAAAEAAEAAAATAAoAAAAEAAEAAAASAAoAAAAEAAEAAAARAAoAAAAEAAEAAAAQAAoAAAAEAAEAAAAPAAoAAAAEAAEAAAAOAAoAAAAEAAEAAAANAAoAAAAEAAEAAAAMAAoAAAAEAAEAAAALAAoAAAAEAAEAAAAKAAoAAAAEAAEAAAAJAAoAAAAEAAEAAAAIAAoAAAAEAAEAAAAHAAoAAAAEAAEAAAAGAAoAAAAEAAEAAAAFAAoAAAAEAAEAAAAEAAoAAAAEAAEAAAADAAoAAAAEAAEAAAACAAoAAAAEAAEAAAABAAoAAAAEAAEAAAABAAkAAAAEAAEAAAABAAgAAAAEAAEAAAABAAcAAAAEAAEAAAABAAYAAAAEAAEAAAABAAUAAAAEAAEAAAABAAQAAAAEAAEAAAABAAMAAAAEAAEAAAABAAIAAAAEAAEAAAABAAEAAAAEAAEAAAACAAEAAAAEAAEAAAADAAEAAAAEAAEAAAAEAAEAAAAEAAEAAAAFAAEAAAAEAAEAAAAGAAEAAAAEAAEAAAAHAAEAAAAEAAEAAAAIAAEAAAAEAAEAAAAJAAEAAAAEAAEAAAAKAAEAAAAEAAEAAAALAAEAAAAEAAEAAAAMAAEAAAAEAAEAAAAMAAIAAAAEAAEAAAANAAIAAAAEAAEAAAAOAAIAAAAEAAEAAAAPAAIAAAAEAAEAAAAQAAIAAAAEAAEAAAAQAAEAAAAEAAEAAAAPAAEAAAAEAAEAAAAOAAEAAAAEAAEAAAANAAEAAAAEAAEAAAARAAEAAAAEAAEAAAASAAEAAAAEAAEAAAASAAIAAAAEAAEAAAASAAMAAAAEAAEAAAASAAQAAAAEAAEAAAASAAUAAAAEAAEAAAASAAYAAAAEAAEAAAASAAcAAAAEAAEAAAASAAgAAAAEAAEAAAASAAkAAAAEAAEAAAARAAkAAAAEAAEAAAAQAAgAAAAEAAEAAAAPAAgAAAAEAAEAAAAOAAgAAAAEAAEAAAANAAgAAAAEAAEAAAAMAAgAAAAEAAEAAAAMAAkAAAAEAAEAAAALAAkAAAAEAAEAAAAKAAkAAAAEAAEAAAAJAAkAAAAEAAEAAAAJAAgAAAAEAAEAAAAIAAgAAAAEAAEAAAAHAAgAAAAEAAEAAAAGAAgAAAAEAAEAAAAFAAgAAAAEAAEAAAAEAAgAAAAEAAEAAAADAAgAAAAEAAEAAAADAAcAAAAEAAEAAAACAAcAAAAEAAEAAAACAAgAAAAEAAEAAAACAAkAAAAEAAEAAAADAAkAAAAEAAEAAAAEAAkAAAAEAAEAAAAFAAkAAAAEAAEAAAAGAAkAAAAEAAEAAAAHAAkAAAAEAAEAAAAIAAkAAAAEAAEAAAANAAkAAAAEAAEAAAAOAAkAAAAEAAEAAAAPAAkAAAAEAAEAAAAQAAkAAAAEAAEAAAALAAgAAAAEAAEAAAAKAAgAAAAEAAEAAAAJAAcAAAAEAAEAAAAKAAcAAAAEAAEAAAALAAcAAAAEAAEAAAAMAAcAAAAEAAEAAAANAAcAAAAEAAEAAAAOAAcAAAAEAAEAAAAPAAcAAAAEAAEAAAAQAAcAAAAEAAEAAAARAAcAAAAEAAEAAAARAAgAAAAEAAEAAAARAAYAAAAEAAEAAAARAAUAAAAEAAEAAAARAAQAAAAEAAEAAAARAAMAAAAEAAEAAAARAAIAAAAEAAEAAAAQAAMAAAAEAAEAAAAPAAMAAAAEAAEAAAAOAAMAAAAEAAEAAAANAAMAAAAEAAEAAAAMAAMAAAAEAAEAAAALAAMAAAAEAAEAAAAKAAMAAAAEAAEAAAAJAAMAAAAEAAEAAAAIAAMAAAAEAAEAAAAHAAMAAAAEAAEAAAAGAAMAAAAEAAEAAAAFAAMAAAAEAAEAAAAEAAMAAAAEAAEAAAADAAMAAAAEAAEAAAACAAMAAAAEAAEAAAACAAIAAAAEAAEAAAADAAIAAAAEAAEAAAAEAAIAAAAEAAEAAAAFAAIAAAAEAAEAAAAGAAIAAAAEAAEAAAAHAAIAAAAEAAEAAAAIAAIAAAAEAAEAAAAJAAIAAAAEAAEAAAALAAIAAAAEAAEAAAAKAAIAAAAEAAEAAAAFAAQAAAAEAAEAAAAEAAQAAAAEAAEAAAADAAQAAAAEAAEAAAACAAQAAAAEAAEAAAAGAAQAAAAEAAEAAAAHAAQAAAAEAAEAAAAIAAQAAAAEAAEAAAAJAAQAAAAEAAEAAAAKAAQAAAAEAAEAAAALAAQAAAAEAAEAAAAMAAQAAAAEAAEAAAANAAQAAAAEAAEAAAAOAAQAAAAEAAEAAAAPAAQAAAAEAAEAAAAQAAQAAAAEAAEAAAAQAAUAAAAEAAEAAAAPAAUAAAAEAAEAAAAOAAUAAAAEAAEAAAANAAUAAAAEAAEAAAAMAAUAAAAEAAEAAAALAAUAAAAEAAEAAAAKAAUAAAAEAAEAAAAJAAUAAAAEAAEAAAAIAAUAAAAEAAEAAAAHAAUAAAAEAAEAAAAGAAUAAAAEAAEAAAAFAAUAAAAEAAEAAAAEAAUAAAAEAAEAAAADAAUAAAAEAAEAAAACAAUAAAAEAAEAAAACAAYAAAAEAAEAAAADAAYAAAAEAAEAAAAEAAYAAAAEAAEAAAAFAAYAAAAEAAEAAAAGAAYAAAAEAAEAAAAHAAYAAAAEAAEAAAAIAAYAAAAEAAEAAAAJAAYAAAAEAAEAAAAKAAYAAAAEAAEAAAALAAYAAAAEAAEAAAAMAAYAAAAEAAEAAAANAAYAAAAEAAEAAAAOAAYAAAAEAAEAAAAPAAYAAAAEAAEAAAAQAAYAAAAEAAEAAAAIAAcAAAAEAAEAAAAHAAcAAAAEAAEAAAAGAAcAAAAEAAEAAAAFAAcAAAAEAAEAAAAEAAcAAAAEAAEAAAA=")
+tile_set = SubResource("TileSet_cyfno")
+
+[node name="Background" type="TileMapLayer" parent="ParallaxBackground/ParallaxLayer" unique_id=2089401420]
+modulate = Color(0.4390491, 0.43904912, 0.43904912, 1)
+tile_map_data = PackedByteArray("AAAAAAAAAQAEAAEAAAAAAAEAAQAEAAEAAAAAAAIAAQAEAAEAAAAAAAMAAQAEAAEAAAAAAAQAAQAEAAEAAAAAAAUAAQAEAAEAAAAAAAYAAQAEAAEAAAAAAAcAAQAEAAEAAAAAAAgAAQAEAAEAAAAAAAkAAQAEAAEAAAAAAAoAAQAEAAEAAAABAAoAAQAEAAEAAAACAAoAAQAEAAEAAAADAAoAAQAEAAEAAAAEAAoAAQAEAAEAAAAFAAoAAQAEAAEAAAAGAAoAAQAEAAEAAAAHAAoAAQAEAAEAAAAIAAoAAQAEAAEAAAAJAAoAAQAEAAEAAAAKAAoAAQAEAAEAAAALAAoAAQAEAAEAAAAMAAoAAQAEAAEAAAANAAoAAQAEAAEAAAAOAAoAAQAEAAEAAAAPAAoAAQAEAAEAAAAQAAoAAQAEAAEAAAARAAoAAQAEAAEAAAASAAoAAQAEAAEAAAATAAoAAQAEAAEAAAATAAkAAQAEAAEAAAATAAgAAQAEAAEAAAATAAcAAQAEAAEAAAATAAYAAQAEAAEAAAATAAUAAQAEAAEAAAATAAQAAQAEAAEAAAATAAMAAQAEAAEAAAATAAIAAQAEAAEAAAATAAEAAQAEAAEAAAATAAAAAQAEAAEAAAASAAAAAQAEAAEAAAARAAAAAQAEAAEAAAAQAAAAAQAEAAEAAAAPAAAAAQAEAAEAAAAOAAAAAQAEAAEAAAANAAAAAQAEAAEAAAAMAAAAAQAEAAEAAAALAAAAAQAEAAEAAAAKAAAAAQAEAAEAAAAJAAAAAQAEAAEAAAAIAAAAAQAEAAEAAAAHAAAAAQAEAAEAAAAGAAAAAQAEAAEAAAAFAAAAAQAEAAEAAAAEAAAAAQAEAAEAAAADAAAAAQAEAAEAAAACAAAAAQAEAAEAAAABAAAAAQAEAAEAAAABAAEAAQAEAAEAAAABAAIAAQAEAAEAAAABAAMAAQAEAAEAAAABAAQAAQAEAAEAAAABAAUAAQAEAAEAAAABAAYAAQAEAAEAAAABAAcAAQAEAAEAAAABAAgAAQAEAAEAAAABAAkAAQAEAAEAAAACAAkAAQAEAAEAAAADAAkAAQAEAAEAAAAEAAkAAQAEAAEAAAAFAAkAAQAEAAEAAAAGAAkAAQAEAAEAAAAHAAkAAQAEAAEAAAAHAAgAAQAEAAEAAAAIAAgAAQAEAAEAAAAJAAgAAQAEAAEAAAAKAAgAAQAEAAEAAAAKAAkAAQAEAAEAAAAJAAkAAQAEAAEAAAAIAAkAAQAEAAEAAAALAAkAAQAEAAEAAAAMAAkAAQAEAAEAAAANAAkAAQAEAAEAAAAOAAkAAQAEAAEAAAAPAAkAAQAEAAEAAAAQAAkAAQAEAAEAAAARAAkAAQAEAAEAAAASAAkAAQAEAAEAAAASAAgAAQAEAAEAAAASAAcAAQAEAAEAAAASAAYAAQAEAAEAAAARAAYAAQAEAAEAAAARAAUAAQAEAAEAAAARAAQAAQAEAAEAAAARAAMAAQAEAAEAAAARAAIAAQAEAAEAAAASAAIAAQAEAAEAAAASAAMAAQAEAAEAAAASAAQAAQAEAAEAAAASAAUAAQAEAAEAAAASAAEAAQAEAAEAAAARAAEAAQAEAAEAAAAQAAEAAQAEAAEAAAAPAAEAAQAEAAEAAAAOAAEAAQAEAAEAAAANAAEAAQAEAAEAAAAMAAEAAQAEAAEAAAALAAEAAQAEAAEAAAAKAAEAAQAEAAEAAAAJAAEAAQAEAAEAAAAIAAEAAQAEAAEAAAAHAAEAAQAEAAEAAAAGAAEAAQAEAAEAAAAFAAEAAQAEAAEAAAAEAAEAAQAEAAEAAAADAAEAAQAEAAEAAAACAAEAAQAEAAEAAAACAAIAAQAEAAEAAAACAAMAAQAEAAEAAAACAAQAAQAEAAEAAAACAAUAAQAEAAEAAAACAAYAAQAEAAEAAAACAAcAAQAEAAEAAAACAAgAAQAEAAEAAAADAAgAAQAEAAEAAAAEAAgAAQAEAAEAAAAFAAgAAQAEAAEAAAAGAAgAAQAEAAEAAAALAAgAAQAEAAEAAAAMAAgAAQAEAAEAAAANAAgAAQAEAAEAAAAOAAgAAQAEAAEAAAAPAAgAAQAEAAEAAAAQAAgAAQAEAAEAAAARAAgAAQAEAAEAAAARAAcAAQAEAAEAAAAQAAcAAQAEAAEAAAAPAAcAAQAEAAEAAAAOAAcAAQAEAAEAAAANAAcAAQAEAAEAAAAMAAcAAQAEAAEAAAALAAcAAQAEAAEAAAAKAAcAAQAEAAEAAAAJAAcAAQAEAAEAAAAIAAcAAQAEAAEAAAAHAAcAAQAEAAEAAAAGAAcAAQAEAAEAAAAFAAcAAQAEAAEAAAAEAAcAAQAEAAEAAAADAAcAAQAEAAEAAAADAAYAAQAEAAEAAAAEAAYAAQAEAAEAAAAFAAYAAQAEAAEAAAAGAAYAAQAEAAEAAAAHAAYAAQAEAAEAAAAIAAYAAQAEAAEAAAAJAAYAAQAEAAEAAAAKAAYAAQAEAAEAAAALAAYAAQAEAAEAAAAMAAYAAQAEAAEAAAANAAYAAQAEAAEAAAAOAAYAAQAEAAEAAAAPAAYAAQAEAAEAAAAQAAYAAQAEAAEAAAAQAAUAAQAEAAEAAAAPAAUAAQAEAAEAAAAOAAUAAQAEAAEAAAANAAUAAQAEAAEAAAAMAAUAAQAEAAEAAAALAAUAAQAEAAEAAAAKAAUAAQAEAAEAAAAJAAUAAQAEAAEAAAAIAAUAAQAEAAEAAAAHAAUAAQAEAAEAAAAGAAUAAQAEAAEAAAAFAAUAAQAEAAEAAAAEAAUAAQAEAAEAAAADAAUAAQAEAAEAAAADAAQAAQAEAAEAAAAEAAQAAQAEAAEAAAAFAAQAAQAEAAEAAAAGAAQAAQAEAAEAAAAHAAQAAQAEAAEAAAAIAAQAAQAEAAEAAAAJAAQAAQAEAAEAAAAKAAQAAQAEAAEAAAALAAQAAQAEAAEAAAAMAAQAAQAEAAEAAAANAAQAAQAEAAEAAAAOAAQAAQAEAAEAAAAPAAQAAQAEAAEAAAAQAAQAAQAEAAEAAAAQAAMAAQAEAAEAAAAPAAMAAQAEAAEAAAAOAAMAAQAEAAEAAAANAAMAAQAEAAEAAAAMAAMAAQAEAAEAAAALAAMAAQAEAAEAAAAKAAMAAQAEAAEAAAAJAAMAAQAEAAEAAAAIAAMAAQAEAAEAAAAHAAMAAQAEAAEAAAAGAAMAAQAEAAEAAAAFAAMAAQAEAAEAAAAEAAMAAQAEAAEAAAADAAMAAQAEAAEAAAADAAIAAQAEAAEAAAAEAAIAAQAEAAEAAAAFAAIAAQAEAAEAAAAGAAIAAQAEAAEAAAAHAAIAAQAEAAEAAAAIAAIAAQAEAAEAAAAJAAIAAQAEAAEAAAAKAAIAAQAEAAEAAAALAAIAAQAEAAEAAAAMAAIAAQAEAAEAAAANAAIAAQAEAAEAAAAOAAIAAQAEAAEAAAAPAAIAAQAEAAEAAAAQAAIAAQAEAAEAAAA=")
+tile_set = SubResource("TileSet_p2mug")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=591774267]
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer" unique_id=1818559276]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 9.0
+offset_bottom = 39.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Level_1" type="Button" parent="VBoxContainer" unique_id=1661028213]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer" unique_id=2101408662]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = -150
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=859150454]
+custom_minimum_size = Vector2(150, 180)
+layout_mode = 2
+texture = ExtResource("4_n150m")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/CenterContainer/VBoxContainer" unique_id=1499013977]
+custom_minimum_size = Vector2(150, 180)
+layout_mode = 2
+texture = ExtResource("5_ttnvy")
+region_rect = Rect2(0, 0, 120, 180)
+patch_margin_top = 120
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect" unique_id=1100587560]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 180.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer" unique_id=108331812]
+layout_mode = 2
+
+[node name="Level_1" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1661028213]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_cyfno")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qf6nx")
 text = "Level 1"
 
-[node name="Hard_Level_1" type="Button" parent="VBoxContainer" unique_id=1549609066]
+[node name="Hard_Level_1" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1549609066]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_cyfno")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qf6nx")
 text = "Hard Level 1"
 
-[node name="Hard_Level_2" type="Button" parent="VBoxContainer" unique_id=2085604241]
+[node name="Hard_Level_2" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=2085604241]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_cyfno")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qf6nx")
 text = "Hard Level 2"
 
-[node name="Test_Level" type="Button" parent="VBoxContainer" unique_id=1191685865]
+[node name="Test_Level" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1191685865]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_cyfno")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qf6nx")
 text = "Old Version"
 
-[node name="Quit" type="Button" parent="VBoxContainer" unique_id=1906660440]
+[node name="Quit" type="Button" parent="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer" unique_id=1906660440]
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_cyfno")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qf6nx")
 text = "Quit"
 
-[connection signal="pressed" from="VBoxContainer/Level_1" to="." method="_on_level_1_pressed"]
-[connection signal="pressed" from="VBoxContainer/Hard_Level_1" to="." method="_on_hard_level_1_pressed"]
-[connection signal="pressed" from="VBoxContainer/Hard_Level_2" to="." method="_on_hard_level_2_pressed"]
-[connection signal="pressed" from="VBoxContainer/Test_Level" to="." method="_on_test_level_pressed"]
-[connection signal="pressed" from="VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=617258944]
+position = Vector2(161, 96)
+scale = Vector2(0.8, 0.8)
+color = Color(0.63529414, 0.22745098, 0.93333334, 1)
+energy = 4.3
+range_layer_min = -1000
+range_item_cull_mask = 7
+shadow_enabled = true
+shadow_item_cull_mask = 7
+texture = SubResource("GradientTexture2D_rqde2")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=428371973]
+stream = ExtResource("8_y5nvd")
+autoplay = true
+
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Level_1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Hard_Level_1" to="." method="_on_hard_level_1_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Hard_Level_2" to="." method="_on_hard_level_2_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Test_Level" to="." method="_on_test_level_pressed"]
+[connection signal="pressed" from="CanvasLayer/CenterContainer/VBoxContainer/NinePatchRect/MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

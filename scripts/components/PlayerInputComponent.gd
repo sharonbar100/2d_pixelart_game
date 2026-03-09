@@ -5,7 +5,6 @@ class_name PlayerInputComponent
 
 func _ready():
 	process_physics_priority = -100 
-	# FIX: Verify it is assigned to the correct slot
 	if not entity or entity.input_component != self:
 		set_physics_process(false)
 
@@ -19,6 +18,8 @@ func _physics_process(_delta: float):
 		entity.input_dash_held = false 
 		entity.input_attack_pressed = false
 		entity.input_down_pressed = false
+		entity.input_up_held = false
+		entity.input_down_held = false
 		return
 
 	entity.input_direction = Input.get_axis("move_left", "move_right")
@@ -28,4 +29,8 @@ func _physics_process(_delta: float):
 	entity.input_dash_pressed = Input.is_action_just_pressed("dash")
 	entity.input_dash_held = Input.is_action_pressed("dash")
 	entity.input_attack_pressed = Input.is_action_just_pressed("attack")
+	
+	# Keep just_pressed for quick events, but we also have held now for camera/drops
 	entity.input_down_pressed = Input.is_action_just_pressed("move_down")
+	entity.input_up_held = Input.is_action_pressed("move_up")
+	entity.input_down_held = Input.is_action_pressed("move_down")

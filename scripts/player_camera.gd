@@ -102,22 +102,28 @@ func _physics_process(delta):
 	
 	# If the physical resulting velocity is near zero, the player is effectively stopped
 	if current_vel != null and abs(current_vel.x) < 5.0 and abs(current_vel.y) < 5.0:
-		if Input.is_action_pressed("ui_up"):
+		
+		# Read directly from the entity's input blackboard
+		var up_held = target.get("input_up_held") == true
+		var down_held = target.get("input_down_held") == true
+		var dir = target.get("input_direction")
+		
+		if up_held:
 			is_peeking_input = true
 			peek_timer += delta
 			if peek_timer >= peek_delay: target_peek.y = peek_up_distance
 			
-		elif Input.is_action_pressed("ui_down"):
+		elif down_held:
 			is_peeking_input = true
 			peek_timer += delta
 			if peek_timer >= peek_delay: target_peek.y = peek_down_distance
 			
-		elif Input.is_action_pressed("ui_left"):
+		elif dir != null and dir < -0.5: # Holding Left
 			is_peeking_input = true
 			peek_timer += delta
 			if peek_timer >= peek_delay: target_peek.x = peek_left_distance
 			
-		elif Input.is_action_pressed("ui_right"):
+		elif dir != null and dir > 0.5: # Holding Right
 			is_peeking_input = true
 			peek_timer += delta
 			if peek_timer >= peek_delay: target_peek.x = peek_right_distance

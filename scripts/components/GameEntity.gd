@@ -18,7 +18,7 @@ class_name GameEntity
 @export var input_component: Node 
 @export var movement_component: Node
 @export var jump_component: Node
-@export var gravity_component: Node # NEW: Dedicated gravity slot!
+@export var gravity_component: Node
 @export var dash_component: Node
 @export var attack_component: Node
 @export var health_component: Node
@@ -52,6 +52,8 @@ var input_dash_pressed := false
 var input_dash_held := false
 var input_attack_pressed := false
 var input_down_pressed := false
+var input_up_held := false     # NEW: For Camera panning up
+var input_down_held := false   # NEW: For Camera panning down
 
 var all_layers: Array[TileMapLayer] = []
 
@@ -97,5 +99,6 @@ func get_solid_tile_center(pos: Vector2) -> Vector2:
 		var map_pos = layer.local_to_map(layer.to_local(pos))
 		var tile_data = layer.get_cell_tile_data(map_pos)
 		if tile_data and tile_data.get_collision_polygons_count(0) > 0:
-			return layer.to_global(layer.map_to_local(map_pos))
+			var center_local = layer.map_to_local(map_pos)
+			return layer.to_global(center_local)
 	return pos

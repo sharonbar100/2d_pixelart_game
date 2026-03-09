@@ -3,9 +3,9 @@ class_name LadderComponent
 
 @export var climb_speed := 60.0
 @export var ladder_horizontal_freedom := 10.0
+@export var ladder_catch_forgiveness := 12.0 # Horizontal wiggle room (pixels)
 
 @export_group("Physics Properties")
-# Assign a CollisionShape2D or CollisionPolygon2D in the Inspector!
 @export var ladder_hitbox: Node2D 
 
 var ladder_ignore_timer := 0.0
@@ -17,7 +17,6 @@ func _ready():
 		set_physics_process(false)
 		return
 		
-	# Disable the hitbox mathematically so Godot's physics engine ignores it
 	if ladder_hitbox and "disabled" in ladder_hitbox: 
 		ladder_hitbox.disabled = true
 
@@ -39,13 +38,23 @@ func _physics_process(delta: float):
 			entity.jumped_from_ladder = false
 			entity.velocity = Vector2.ZERO
 			snap_to_ladder_x()
-			if entity.is_dashing: entity.is_dashing = false 
+			if entity.is_dashing: 
+				if entity.dash_component and entity.dash_component.has_method("end_dash"):
+					entity.dash_component.end_dash()
+				else:
+					entity.is_dashing = false 
 
 	if entity.is_on_ladder and not entity.is_dashing:
 		var v_dir = entity.input_vertical
 		var h_dir = entity.input_direction
 		
-		if v_dir < 0 and not is_ladder_at_offset(Vector2(0, (v_dir * climb_speed * delta) - 1.0)): v_dir = 0
+		# --- CLAMP LOGIC ---
+		if v_dir < 0 and not is_ladder_at_offset(Vector2(0, (v_dir * climb_speed * delta) - 1.0)): 
+			v_dir = 0
+			
+		if v_dir > 0 and not entity.is_on_floor() and not is_ladder_at_offset(Vector2(0, (v_dir * climb_speed * delta) + 1.0)):
+			v_dir = 0
+		# -----------------------
 			
 		var input_dir = Vector2(h_dir, v_dir)
 		if input_dir.length() > 0:
@@ -55,7 +64,7 @@ func _physics_process(delta: float):
 			entity.velocity = Vector2.ZERO
 			
 		if entity.velocity.x != 0:
-			var bounds = get_ladder_bounds_x()
+			var bounds = get_ladder_bounds_x(ladder_catch_forgiveness) # FIX: Use forgiveness here so you don't climb off into thin air
 			var next_x = entity.global_position.x + (entity.velocity.x * delta)
 			if next_x < bounds.x:
 				entity.global_position.x = bounds.x
@@ -66,12 +75,17 @@ func _physics_process(delta: float):
 				
 		if entity.is_on_floor() and v_dir > 0:
 			entity.is_on_ladder = false
+			
 		elif entity.input_jump_pressed and not entity.block_input:
-			# PURIFIED JUMP: Just let go! 
-			# JumpComponent runs right after this and handles the actual leap.
-			entity.is_on_ladder = false
-			entity.jumped_from_ladder = true
-			ladder_ignore_timer = 0.2
+			if entity.input_down_held:
+				entity.is_on_ladder = false
+				entity.jumped_from_ladder = false
+				ladder_ignore_timer = 0.2
+				entity.input_jump_pressed = false
+			else:
+				entity.is_on_ladder = false
+				entity.jumped_from_ladder = true
+				ladder_ignore_timer = 0.2
 
 # --- UNIVERSAL BOUNDING BOX CALCULATOR ---
 func get_collider_rect(collider: Node2D) -> Rect2:
@@ -97,17 +111,25 @@ func get_collider_rect(collider: Node2D) -> Rect2:
 
 func check_ladder_overlap():
 	entity.is_overlapping_ladder = is_ladder_at_offset(Vector2.ZERO)
+	
+	if not entity.is_overlapping_ladder and not entity.is_on_floor():
+		entity.is_overlapping_ladder = is_ladder_at_offset(Vector2.ZERO, ladder_catch_forgiveness)
+
 	if entity.is_on_ladder and not entity.is_overlapping_ladder:
 		entity.is_on_ladder = false
 		if entity.velocity.y < 0: entity.velocity.y = 0
 
-func is_ladder_at_offset(offset: Vector2) -> bool:
+func is_ladder_at_offset(offset: Vector2, width_forgiveness: float = 0.0) -> bool:
 	if not ladder_hitbox: return false
 	
 	var shape_rect = get_collider_rect(ladder_hitbox)
 	if shape_rect.size == Vector2.ZERO: return false
 	
 	var global_rect = Rect2(ladder_hitbox.global_position + shape_rect.position + offset, shape_rect.size)
+	
+	if width_forgiveness > 0:
+		global_rect.position.x -= width_forgiveness
+		global_rect.size.x += width_forgiveness * 2
 	
 	for layer in entity.all_layers:
 		if not is_instance_valid(layer): continue
@@ -120,16 +142,22 @@ func is_ladder_at_offset(offset: Vector2) -> bool:
 	return false
 
 func snap_to_ladder_x():
-	var bounds = get_ladder_bounds_x()
+	var bounds = get_ladder_bounds_x(ladder_catch_forgiveness) # FIX: Actually use the forgiveness width when snapping
 	entity.global_position.x = clamp(entity.global_position.x, bounds.x, bounds.y)
 
-func get_ladder_bounds_x() -> Vector2:
+# FIX: Added 'width_forgiveness' parameter so it can locate tiles outside the strict hitbox
+func get_ladder_bounds_x(width_forgiveness: float = 0.0) -> Vector2:
 	if not ladder_hitbox: return Vector2(-INF, INF)
 	
 	var shape_rect = get_collider_rect(ladder_hitbox)
 	if shape_rect.size == Vector2.ZERO: return Vector2(-INF, INF)
 	
 	var global_rect = Rect2(ladder_hitbox.global_position + shape_rect.position, shape_rect.size)
+	
+	# FIX: Apply the forgiveness here so we actually find the tile we are snapping to
+	if width_forgiveness > 0:
+		global_rect.position.x -= width_forgiveness
+		global_rect.size.x += width_forgiveness * 2
 	
 	for layer in entity.all_layers:
 		if not is_instance_valid(layer): continue

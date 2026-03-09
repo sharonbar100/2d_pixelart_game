@@ -46,18 +46,26 @@ func _physics_process(delta: float):
 	if entity.is_hanging:
 		entity.velocity = Vector2.ZERO
 		
-		if entity.input_jump_pressed and not entity.block_input:
+		# UPDATED: Dash out of Ledge Grab
+		if entity.input_dash_pressed and not entity.block_input:
 			entity.is_hanging = false
-			# THE FIX: Removed ledge_drop_timer = 0.2!
-			# Because velocity.y becomes < 0 instantly upon jumping, 
-			# it naturally prevents re-grabbing until you start falling again.
+			# REMOVED: ledge_drop_timer = 0.2
+			# We don't need a drop timer here because check_ledge_grab() 
+			# is ignored as long as entity.is_dashing is true!
 			
-		elif entity.input_down_pressed:
-			entity.is_hanging = false
-			# Kept the timer here because dropping means your velocity is instantly >= 0,
-			# so you would instantly re-grab the ledge without it.
-			ledge_drop_timer = 0.2
-			
+			if entity.input_direction != 0:
+				entity.last_facing_direction = sign(entity.input_direction)
+				
+		# UPDATED LEDGE DROP LOGIC:
+		elif entity.input_jump_pressed and not entity.block_input:
+			if entity.input_down_held: 
+				entity.is_hanging = false
+				ledge_drop_timer = 0.2
+				entity.input_jump_pressed = false 
+			else:
+				entity.is_hanging = false
+
+	# Notice the 'not entity.is_dashing' condition here doing the heavy lifting!
 	elif not entity.is_in_knockback and not entity.is_attacking and not entity.is_dashing and not entity.is_on_ladder:
 		check_ledge_grab()
 
@@ -140,22 +148,12 @@ func check_ledge_grab():
 	entity.global_position.y = ledge_y + ledge_snap_offset_y
 	entity.global_position.x = (tile_center.x - (entity.last_facing_direction * (tile_size / 2.0))) - (entity.last_facing_direction * ledge_snap_offset_x)
 
-# --- DELEGATED DEBUG DRAWING ---
 func draw_debug_lines(canvas: Node2D):
 	if not entity: return
-
 	var global_top_pos = get_entity_top_pos()
 	var global_wall_x = get_wall_check_x()
-	
 	var local_top_pos = canvas.to_local(global_top_pos)
-	var local_wall_x = canvas.to_local(Vector2(global_wall_x, 0)).x
-	
-	var pt_bottom = Vector2(local_wall_x, local_top_pos.y)
-	var pt_mid = Vector2(local_wall_x, local_top_pos.y - (ledge_check_upward_reach / 2.0))
-	var pt_top = Vector2(local_wall_x, local_top_pos.y - ledge_check_upward_reach)
-
-	canvas.draw_line(pt_bottom, pt_top, Color.RED, 2.0)
-	canvas.draw_circle(pt_bottom, 2.0, Color.YELLOW)
-	canvas.draw_circle(pt_mid, 2.0, Color.YELLOW)
-	canvas.draw_circle(pt_top, 2.0, Color.YELLOW)
+	var local_wall_x = canvas.to_local(Vector2(global_wall_x, global_top_pos.y))
 	canvas.draw_circle(local_top_pos, 2.0, Color.GREEN)
+	canvas.draw_line(local_top_pos, local_wall_x, Color.RED, 1.0)
+	canvas.draw_circle(local_wall_x, 2.0, Color.BLUE)

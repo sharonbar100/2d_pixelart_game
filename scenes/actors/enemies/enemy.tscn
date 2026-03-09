@@ -61,7 +61,7 @@ size = Vector2(10, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_e1ltt"]
 size = Vector2(10, 10)
 
-[node name="Enemy" type="CharacterBody2D" unique_id=529442611 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "movement_component", "jump_component", "gravity_component", "dash_component", "attack_component", "health_component", "knockback_component", "animation_component", "ladder_component", "ledge_component")]
+[node name="Enemy" type="CharacterBody2D" unique_id=529442611 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "movement_component", "gravity_component", "attack_component", "health_component", "knockback_component", "animation_component")]
 collision_layer = 4
 script = ExtResource("1_qkj82")
 animator = NodePath("AnimatedSprite2D")
@@ -71,15 +71,11 @@ hurtbox_area = NodePath("HurtboxArea")
 hurtbox_shape = NodePath("HurtboxArea/CollisionShape2D")
 input_component = NodePath("Components/PatrolAIComponent")
 movement_component = NodePath("Components/MovementComponent")
-jump_component = NodePath("Components/JumpComponent")
 gravity_component = NodePath("Components/GravityComponent")
-dash_component = NodePath("Components/DashComponent")
 attack_component = NodePath("Components/ContactDamageComponent")
 health_component = NodePath("Components/HealthComponent")
 knockback_component = NodePath("Components/KnockbackComponent")
 animation_component = NodePath("Components/AnimationComponent")
-ladder_component = NodePath("Components/LadderComponent")
-ledge_component = NodePath("Components/LedgeGrabComponent")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1717993725]
 sprite_frames = SubResource("SpriteFrames_hb8ge")

@@ -1,0 +1,135 @@
+[gd_scene format=3 uid="uid://cm32rk22hdd44"]
+
+[ext_resource type="Script" uid="uid://batl3bq2goagr" path="res://scripts/components/GameEntity.gd" id="1_tatcp"]
+[ext_resource type="Texture2D" uid="uid://bd4l1uljmp2co" path="res://assets/sprites/enemies/booshead.png" id="2_sxvgg"]
+[ext_resource type="Script" uid="uid://c7ygsei8n7w00" path="res://scripts/components/MovementComponent.gd" id="3_8x3bm"]
+[ext_resource type="Script" uid="uid://c7c3v74igl6e4" path="res://scripts/components/AttackComponent.gd" id="4_sxvgg"]
+[ext_resource type="Script" uid="uid://b5q3c5emyfv7h" path="res://scripts/components/DashComponent.gd" id="5_1ho8j"]
+[ext_resource type="Script" uid="uid://bm4ks5gksd7v4" path="res://scripts/components/HealthComponent.gd" id="6_ttdr1"]
+[ext_resource type="Script" uid="uid://d0b7p6mi0w108" path="res://scripts/components/KnockbackComponent.gd" id="7_miwfg"]
+[ext_resource type="Script" uid="uid://c5vcy6kuf0sqh" path="res://scripts/components/LadderComponent.gd" id="8_ge1x1"]
+[ext_resource type="Script" uid="uid://dw0infuklharq" path="res://scripts/components/AnimationComponent.gd" id="9_i4tuh"]
+[ext_resource type="Script" uid="uid://bm42u1genesif" path="res://scripts/components/LedgeGrabComponent.gd" id="10_l4rnn"]
+[ext_resource type="Script" uid="uid://dpgp5b13baubs" path="res://scripts/components/JumpComponent.gd" id="11_hnxes"]
+[ext_resource type="Script" uid="uid://4tljvkghg6dg" path="res://scripts/components/ContactDamageComponent.gd" id="12_bsu33"]
+[ext_resource type="Script" uid="uid://domqadnngk83p" path="res://scripts/components/BossInputComponent.gd" id="13_8x3bm"]
+[ext_resource type="Script" uid="uid://vikn68g6gacm" path="res://scripts/components/GravityComponent.gd" id="14_sxvgg"]
+[ext_resource type="Script" uid="uid://ba8t7837ojb07" path="res://scripts/components/DarknessTrailComponent.gd" id="15_sxvgg"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m2nnq"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_sxvgg")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m1twv"]
+radius = 7.0
+height = 66.85159
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_cbpry"]
+radius = 6.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_dvytk"]
+radius = 7.0
+
+[node name="Boss" type="CharacterBody2D" unique_id=1768941484 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "movement_component", "jump_component", "gravity_component", "dash_component", "attack_component", "health_component", "knockback_component", "animation_component")]
+collision_layer = 4
+script = ExtResource("1_tatcp")
+animator = NodePath("Visuals/AnimatedSprite2D")
+main_collider = NodePath("CollisionShape2D")
+attack_area = NodePath("AttackArea")
+hurtbox_area = NodePath("Hurtbox")
+hurtbox_shape = NodePath("Hurtbox/CollisionShape2D")
+input_component = NodePath("Components/BossInputComponent")
+movement_component = NodePath("Components/MovementComponent")
+jump_component = NodePath("Components/JumpComponent")
+gravity_component = NodePath("Components/GravityComponent")
+dash_component = NodePath("Components/DashComponent")
+attack_component = NodePath("Components/ContactDamageComponent")
+health_component = NodePath("Components/HealthComponent")
+knockback_component = NodePath("Components/KnockbackComponent")
+animation_component = NodePath("Components/AnimationComponent")
+
+[node name="Visuals" type="Node2D" parent="." unique_id=1737551484]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=1709906150]
+z_index = 1
+sprite_frames = SubResource("SpriteFrames_m2nnq")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=528263607]
+position = Vector2(0, 1)
+scale = Vector2(0.931648, 0.1971399)
+shape = SubResource("CapsuleShape2D_m1twv")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=962006372]
+collision_layer = 4
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1422649168]
+shape = SubResource("CircleShape2D_cbpry")
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=767228269]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=74268850]
+shape = SubResource("CircleShape2D_dvytk")
+
+[node name="Components" type="Node" parent="." unique_id=1050824463]
+
+[node name="MovementComponent" type="Node" parent="Components" unique_id=323141291]
+script = ExtResource("3_8x3bm")
+speed = 80.0
+
+[node name="AttackComponent" type="Node" parent="Components" unique_id=1094369413]
+script = ExtResource("4_sxvgg")
+
+[node name="DashComponent" type="Node" parent="Components" unique_id=788428845]
+script = ExtResource("5_1ho8j")
+
+[node name="HealthComponent" type="Node" parent="Components" unique_id=386757219]
+script = ExtResource("6_ttdr1")
+max_health = 10
+
+[node name="KnockbackComponent" type="Node" parent="Components" unique_id=1492207976]
+script = ExtResource("7_miwfg")
+
+[node name="LadderComponent" type="Node" parent="Components" unique_id=420514612]
+script = ExtResource("8_ge1x1")
+
+[node name="AnimationComponent" type="Node" parent="Components" unique_id=826119105]
+script = ExtResource("9_i4tuh")
+
+[node name="LedgeGrabComponent" type="Node" parent="Components" unique_id=762369168]
+script = ExtResource("10_l4rnn")
+
+[node name="JumpComponent" type="Node" parent="Components" unique_id=733047246]
+script = ExtResource("11_hnxes")
+
+[node name="ContactDamageComponent" type="Node" parent="Components" unique_id=1166097266]
+script = ExtResource("12_bsu33")
+
+[node name="BossInputComponent" type="Node" parent="Components" unique_id=1006565325]
+script = ExtResource("13_8x3bm")
+
+[node name="GravityComponent" type="Node" parent="Components" unique_id=1776757394]
+script = ExtResource("14_sxvgg")
+
+[node name="DarknessTrailComponent" type="Node2D" parent="Components" unique_id=133142083]
+script = ExtResource("15_sxvgg")
+base_emit_rate = 0.005
+fade_duration = 0.3
+min_size = 1.0
+max_size = 3.0
+max_particles = 400

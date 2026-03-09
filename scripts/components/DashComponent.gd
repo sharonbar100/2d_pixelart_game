@@ -23,11 +23,9 @@ func _ready():
 func _physics_process(delta: float):
 	if entity.is_dead or entity.is_in_knockback: return
 
-	# Observer Pattern: Reset dash state if on floor, hanging, or on a ladder
 	if entity.is_on_floor() or entity.is_hanging or entity.is_on_ladder:
 		can_dash = true
 
-	# Note: We allow dashing off ladders now!
 	if entity.input_dash_pressed and can_dash and not entity.block_input and not entity.is_dashing and not entity.is_hanging:
 		start_dash()
 
@@ -95,6 +93,19 @@ func end_dash():
 		
 	entity.is_dashing = false
 	
-	var current_input_dir = entity.input_direction
-	var base_speed = entity.movement_component.speed if entity.movement_component else 0.0
-	entity.velocity.x = current_input_dir * base_speed
+	# FIX: Look ahead and check if we are finishing the dash right on top of a ladder!
+	var catching_ladder = false
+	if entity.ladder_component and not entity.is_on_floor():
+		entity.ladder_component.check_ladder_overlap()
+		if entity.is_overlapping_ladder:
+			catching_ladder = true
+	
+	# If we are over a ladder, halt horizontal velocity entirely so we don't accidentally
+	# walk out of the forgiveness zone before the ladder component grabs us next frame.
+	if catching_ladder:
+		entity.velocity.x = 0
+		entity.velocity.y = 0 
+	else:
+		var current_input_dir = entity.input_direction
+		var base_speed = entity.movement_component.speed if entity.movement_component else 0.0
+		entity.velocity.x = current_input_dir * base_speed
