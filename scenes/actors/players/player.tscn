@@ -58,16 +58,16 @@
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_vvl3a")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_q4h2k")
+"texture": ExtResource("5_eeh0y")
 }, {
 "duration": 1.0,
 "texture": ExtResource("4_1fxde")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_eeh0y")
+"texture": ExtResource("3_q4h2k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_vvl3a")
 }],
 "loop": false,
 "name": &"attack",
@@ -256,8 +256,7 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q4h2k"]
-size = Vector2(17, 10)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lym6n"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1fxde"]
 radius = 2.0
@@ -292,7 +291,7 @@ ledge_component = NodePath("Components/LedgeGrabComponent")
 light_mask = 0
 visibility_layer = 3
 sprite_frames = SubResource("SpriteFrames_vvl3a")
-animation = &"idle"
+animation = &"attack"
 
 [node name="MoveParticles" type="CPUParticles2D" parent="Graphics" unique_id=993913868]
 emitting = false
@@ -310,8 +309,9 @@ collision_mask = 0
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Combat/AttackArea" unique_id=1915513775]
-position = Vector2(16, 1)
-shape = SubResource("RectangleShape2D_q4h2k")
+position = Vector2(13, 2)
+scale = Vector2(1.2059644, 0.40775776)
+shape = SubResource("CapsuleShape2D_lym6n")
 
 [node name="Hurtbox" type="Area2D" parent="Combat" unique_id=2002467213]
 collision_layer = 8
@@ -333,6 +333,7 @@ debug_color = Color(0.5074483, 0.5793735, 0, 0.89500004)
 
 [node name="HealthComponent" type="Node" parent="Components" unique_id=561708940]
 script = ExtResource("45_fjhas")
+max_health = 4
 use_hit_pause = true
 
 [node name="KnockbackComponent" type="Node" parent="Components" unique_id=2138401797]

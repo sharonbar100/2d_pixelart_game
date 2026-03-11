@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://dm2w5lsulxhyq"]
+
+[ext_resource type="Texture2D" uid="uid://bylkqlufawvb4" path="res://assets/sprites/enemies/fireball.png" id="1_a7vgd"]
+[ext_resource type="Script" uid="uid://n6nvnm6fqa4q" path="res://scripts/fireball.gd" id="1_d3ys0"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3ys0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_a7vgd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4vswh"]
+radius = 8.21954
+
+[sub_resource type="Gradient" id="Gradient_iav0o"]
+offsets = PackedFloat32Array(0.18867925, 0.6792453)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_d3ys0"]
+gradient = SubResource("Gradient_iav0o")
+width = 300
+height = 300
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="Fireball" type="Area2D" unique_id=328410102 groups=["Hitbox"]]
+collision_layer = 4
+collision_mask = 9
+script = ExtResource("1_d3ys0")
+metadata/damage = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=134822892]
+sprite_frames = SubResource("SpriteFrames_d3ys0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1013863207]
+scale = Vector2(0.48664525, 0.45102236)
+shape = SubResource("CircleShape2D_4vswh")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=902568235]
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=2075022700]
+position = Vector2(0, -9.536743e-07)
+scale = Vector2(0.4, 0.4)
+color = Color(0.8521372, 1, 0, 0.532)
+energy = 2.36
+range_item_cull_mask = 7
+shadow_enabled = true
+shadow_item_cull_mask = 7
+texture = SubResource("GradientTexture2D_d3ys0")

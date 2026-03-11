@@ -1,20 +1,30 @@
 [gd_scene format=3 uid="uid://cm32rk22hdd44"]
 
 [ext_resource type="Script" uid="uid://batl3bq2goagr" path="res://scripts/components/GameEntity.gd" id="1_tatcp"]
-[ext_resource type="Texture2D" uid="uid://bd4l1uljmp2co" path="res://assets/sprites/enemies/booshead.png" id="2_sxvgg"]
+[ext_resource type="Texture2D" uid="uid://tqrvgry3bbjh" path="res://assets/sprites/enemies/bosses/boss1/booshead1.png" id="2_m1twv"]
 [ext_resource type="Script" uid="uid://c7ygsei8n7w00" path="res://scripts/components/MovementComponent.gd" id="3_8x3bm"]
+[ext_resource type="Texture2D" uid="uid://drqgdy3gyi28v" path="res://assets/sprites/enemies/bosses/boss1/booshead2.png" id="3_cbpry"]
+[ext_resource type="Texture2D" uid="uid://cggdcuj5cecb8" path="res://assets/sprites/enemies/bosses/boss1/booshead3.png" id="4_dvytk"]
 [ext_resource type="Script" uid="uid://c7c3v74igl6e4" path="res://scripts/components/AttackComponent.gd" id="4_sxvgg"]
 [ext_resource type="Script" uid="uid://b5q3c5emyfv7h" path="res://scripts/components/DashComponent.gd" id="5_1ho8j"]
+[ext_resource type="Texture2D" uid="uid://3h0565jcwo1n" path="res://assets/sprites/enemies/bosses/boss1/booshead4.png" id="5_17fb3"]
+[ext_resource type="Texture2D" uid="uid://b3fqirdxcjsdg" path="res://assets/sprites/enemies/bosses/boss1/booshead5.png" id="6_frtrh"]
 [ext_resource type="Script" uid="uid://bm4ks5gksd7v4" path="res://scripts/components/HealthComponent.gd" id="6_ttdr1"]
+[ext_resource type="Texture2D" uid="uid://dssdsujed4r5a" path="res://assets/sprites/enemies/bosses/boss1/booshead6.png" id="7_b78ep"]
 [ext_resource type="Script" uid="uid://d0b7p6mi0w108" path="res://scripts/components/KnockbackComponent.gd" id="7_miwfg"]
+[ext_resource type="Texture2D" uid="uid://blu236eqhq8ic" path="res://assets/sprites/enemies/bosses/boss1/booshead7.png" id="8_cit0w"]
 [ext_resource type="Script" uid="uid://c5vcy6kuf0sqh" path="res://scripts/components/LadderComponent.gd" id="8_ge1x1"]
 [ext_resource type="Script" uid="uid://dw0infuklharq" path="res://scripts/components/AnimationComponent.gd" id="9_i4tuh"]
+[ext_resource type="Texture2D" uid="uid://b37fvqq03jykc" path="res://assets/sprites/enemies/bosses/boss1/booshead8.png" id="9_qqgjt"]
 [ext_resource type="Script" uid="uid://bm42u1genesif" path="res://scripts/components/LedgeGrabComponent.gd" id="10_l4rnn"]
+[ext_resource type="Texture2D" uid="uid://bu6yamwbbavfp" path="res://assets/sprites/enemies/bosses/boss1/booshead9.png" id="10_n3ooh"]
 [ext_resource type="Script" uid="uid://dpgp5b13baubs" path="res://scripts/components/JumpComponent.gd" id="11_hnxes"]
 [ext_resource type="Script" uid="uid://4tljvkghg6dg" path="res://scripts/components/ContactDamageComponent.gd" id="12_bsu33"]
 [ext_resource type="Script" uid="uid://domqadnngk83p" path="res://scripts/components/BossInputComponent.gd" id="13_8x3bm"]
 [ext_resource type="Script" uid="uid://vikn68g6gacm" path="res://scripts/components/GravityComponent.gd" id="14_sxvgg"]
 [ext_resource type="Script" uid="uid://ba8t7837ojb07" path="res://scripts/components/DarknessTrailComponent.gd" id="15_sxvgg"]
+[ext_resource type="PackedScene" uid="uid://dm2w5lsulxhyq" path="res://scenes/actors/enemies/fireball.tscn" id="15_ttdr1"]
+[ext_resource type="Script" uid="uid://cj60ftc8jt2jj" path="res://scripts/components/PlayerInputComponent.gd" id="16_1ho8j"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_m2nnq"]
 animations = [{
@@ -25,11 +35,35 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_sxvgg")
+"texture": ExtResource("2_m1twv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_cbpry")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_dvytk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_17fb3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_frtrh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_b78ep")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_cit0w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_qqgjt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_n3ooh")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 4.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m1twv"]
@@ -42,7 +76,9 @@ radius = 6.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_dvytk"]
 radius = 7.0
 
-[node name="Boss" type="CharacterBody2D" unique_id=1768941484 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "health_component", "knockback_component")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sxvgg"]
+
+[node name="Boss" type="CharacterBody2D" unique_id=1768941484 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "attack_component", "health_component", "knockback_component")]
 collision_layer = 4
 script = ExtResource("1_tatcp")
 animator = NodePath("Visuals/AnimatedSprite2D")
@@ -50,7 +86,8 @@ main_collider = NodePath("CollisionShape2D")
 attack_area = NodePath("AttackArea")
 hurtbox_area = NodePath("Hurtbox")
 hurtbox_shape = NodePath("Hurtbox/CollisionShape2D")
-input_component = NodePath("Components/BossInputComponent")
+input_component = NodePath("Components/PlayerInputComponent")
+attack_component = NodePath("Components/ContactDamageComponent")
 health_component = NodePath("Components/HealthComponent")
 knockback_component = NodePath("Components/KnockbackComponent")
 
@@ -60,6 +97,8 @@ knockback_component = NodePath("Components/KnockbackComponent")
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_m2nnq")
 animation = &"idle"
+frame = 3
+frame_progress = 0.94462585
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=528263607]
 position = Vector2(0, 1)
@@ -71,7 +110,9 @@ collision_layer = 4
 collision_mask = 16
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=1422649168]
+scale = Vector2(1.500576, 1.4947875)
 shape = SubResource("CircleShape2D_cbpry")
+debug_color = Color(0.6491829, 0.5210043, 0, 0.52000004)
 
 [node name="AttackArea" type="Area2D" parent="." unique_id=767228269]
 collision_layer = 4
@@ -79,8 +120,23 @@ collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=74268850]
 shape = SubResource("CircleShape2D_dvytk")
+debug_color = Color(1, 0, 0.90532964, 0.42000002)
 
 [node name="Components" type="Node" parent="." unique_id=1050824463]
+
+[node name="BossInputComponent" type="Node" parent="Components" unique_id=1006565325 node_paths=PackedStringArray("aggro_area")]
+script = ExtResource("13_8x3bm")
+aggro_area = NodePath("../../Area2D")
+wobble_max_strength = 3.0
+sweep_height = 2.0
+fireball_scene = ExtResource("15_ttdr1")
+waves_count = 6
+wave_fire_rate = 1.2
+spiral_spin_speed = 1.0
+
+[node name="HealthComponent" type="Node" parent="Components" unique_id=386757219]
+script = ExtResource("6_ttdr1")
+max_health = 15
 
 [node name="MovementComponent" type="Node" parent="Components" unique_id=323141291]
 script = ExtResource("3_8x3bm")
@@ -91,10 +147,6 @@ script = ExtResource("4_sxvgg")
 
 [node name="DashComponent" type="Node" parent="Components" unique_id=788428845]
 script = ExtResource("5_1ho8j")
-
-[node name="HealthComponent" type="Node" parent="Components" unique_id=386757219]
-script = ExtResource("6_ttdr1")
-max_health = 10
 
 [node name="KnockbackComponent" type="Node" parent="Components" unique_id=1492207976]
 script = ExtResource("7_miwfg")
@@ -117,12 +169,17 @@ script = ExtResource("12_bsu33")
 [node name="GravityComponent" type="Node" parent="Components" unique_id=1776757394]
 script = ExtResource("14_sxvgg")
 
-[node name="BossInputComponent" type="Node" parent="Components" unique_id=1006565325]
-script = ExtResource("13_8x3bm")
-wobble_max_strength = 3.0
-sweep_height = 2.0
-
 [node name="DarknessTrailComponent" type="Node2D" parent="Components" unique_id=133142083]
 script = ExtResource("15_sxvgg")
 particles_per_second = 200.0
 max_particles = 200
+
+[node name="PlayerInputComponent" type="Node" parent="Components" unique_id=1778180851]
+script = ExtResource("16_1ho8j")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1260377257]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=243160975]
+scale = Vector2(23.05328, 10.201232)
+shape = SubResource("RectangleShape2D_sxvgg")

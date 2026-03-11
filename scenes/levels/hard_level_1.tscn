@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dry4shk8uj32d" path="res://scenes/components/player_camera.tscn" id="5_6dmac"]
 [ext_resource type="PackedScene" uid="uid://73e84pn8oi6k" path="res://scenes/interactables/finish_flag.tscn" id="5_apesj"]
 [ext_resource type="PackedScene" uid="uid://c0pnl132luwtt" path="res://scenes/actors/players/player.tscn" id="5_qkywy"]
+[ext_resource type="Texture2D" uid="uid://bx7ik22kr2int" path="res://assets/sprites/interactables/interactables_normal.png" id="6_jemu1"]
 [ext_resource type="PackedScene" uid="uid://dhjv6xcw0hjbm" path="res://scenes/hazards/kill_zone.tscn" id="7_yh0hp"]
 [ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="8_qkywy"]
 [ext_resource type="Texture2D" uid="uid://08pjwbg7jscj" path="res://assets/sprites/interactables/adam_head.jpeg" id="11_apesj"]
@@ -138,71 +139,33 @@ custom_data_layer_1/name = "is_spike"
 custom_data_layer_1/type = 1
 sources/0 = SubResource("TileSetAtlasSource_jemu1")
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ibugp"]
-polygon = PackedVector2Array(0, -2, 2, 8, -2, 8)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ndtll"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_4yk0h"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_vmrhw"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cfnpk"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_wvtie"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_o8s4s"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
+[sub_resource type="CanvasTexture" id="CanvasTexture_yh0hp"]
+diffuse_texture = ExtResource("2_vwhr5")
+normal_texture = ExtResource("6_jemu1")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oc4kc"]
-texture = ExtResource("2_vwhr5")
+texture = SubResource("CanvasTexture_yh0hp")
 8:0/0 = 0
-8:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:0/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:0/0/custom_data_0 = true
 9:0/0 = 0
-9:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:0/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:0/0/custom_data_0 = true
 8:1/0 = 0
-8:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:1/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:1/0/custom_data_0 = true
 9:1/0 = 0
-9:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:1/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:1/0/custom_data_0 = true
 8:2/0 = 0
-8:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:2/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:2/0/custom_data_0 = true
 9:2/0 = 0
-9:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:2/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:2/0/custom_data_0 = true
 8:3/0 = 0
-8:3/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:3/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:3/0/custom_data_0 = true
 9:3/0 = 0
-9:3/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:3/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:3/0/custom_data_0 = true
 8:4/0 = 0
-8:4/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vmrhw")
-8:4/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_cfnpk")
 8:4/0/custom_data_0 = true
 9:4/0 = 0
-9:4/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_wvtie")
-9:4/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_o8s4s")
 9:4/0/custom_data_0 = true
 0:0/0 = 0
-0:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ibugp")
 0:0/0/custom_data_1 = true
 
 [sub_resource type="TileSet" id="TileSet_s8va5"]
@@ -267,7 +230,7 @@ tile_map_data = PackedByteArray("AAD2/wAAAAAEAAAAAAD1/wAAAAAEAAAAAAD0/wAAAAABAAA
 tile_set = SubResource("TileSet_1bvp3")
 
 [node name="Interactables" type="TileMapLayer" parent="." unique_id=1127347070 groups=["InteractableLayers"]]
-modulate = Color(0.7131886, 0.7206767, 1, 1)
+modulate = Color(0.6996657, 0.6996657, 0.6996657, 1)
 tile_map_data = PackedByteArray("AAAHAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAALAAAAAAAAAAAAAAALAOT/AAAAAAAAAAAOAOb/AAAAAAAAAAAYAPf/AAAIAAQAAAAYAPr/AAAIAAQAAAATAOL/AAAAAAAAAAATAPL/AAAJAAQAAAAPAPL/AAAJAAQAAAALAPL/AAAJAAQAAAAXAPT/AAAIAAQAAAAZAOD/AAAAAAAAAAAaAOD/AAAAAAAAAAAbAOD/AAAAAAAAAABYAMv/AAAIAAAAAABYAMz/AAAIAAEAAABYAM3/AAAIAAIAAABYAM7/AAAIAAMAAABZAMv/AAAIAAEAAABZAMz/AAAIAAIAAABZAM3/AAAIAAMAAABaAMr/AAAIAAEAAABaAMv/AAAIAAIAAABaAMz/AAAIAAMAAABbAMn/AAAIAAIAAABbAMr/AAAIAAEAAABbAMv/AAAIAAEAAABbAMz/AAAIAAIAAABdAMP/AAAAAAAAAABeAMP/AAAAAAAAAABeAMf/AAAAAAAAAABfAMP/AAAAAAAAAABgAMP/AAAAAAAAAABgANL/AAAAAAAAAABhAMP/AAAAAAAAAABhANL/AAAAAAAAAABiAMP/AAAAAAAAAABiANL/AAAAAAAAAABkAM7/AAAAAAAAAABlAM7/AAAAAAAAAABmAM7/AAAAAAAAAABnAM7/AAAAAAAAAABoAM7/AAAAAAAAAAAYAOD/AAAAAAAAAAAfAN3/AAAIAAMAAAAzANf/AAAAAAAAAAAzANn/AAAIAAAAAAAzANr/AAAIAAEAAAAzANv/AAAIAAEAAAAzANz/AAAIAAIAAAAzAN3/AAAIAAMAAAA4ANL/AAAAAAAAAAA4ANb/AAAAAAAAAAA9AND/AAAAAAAAAAA9ANT/AAAAAAAAAABEAND/AAAAAAAAAABGAM//AAAAAAAAAABKAND/AAAAAAAAAABQAMr/AAAAAAAAAABQAMv/AAAAAAAAAABXAMr/AAAIAAAAAABXAMv/AAAIAAEAAABXAMz/AAAIAAIAAABXAM3/AAAIAAEAAABXAM7/AAAIAAEAAABXAM//AAAIAAIAAABXAND/AAAIAAMAAABZAMr/AAAIAAAAAABaAMn/AAAIAAAAAABbAMf/AAAIAAAAAABbAMj/AAAIAAEAAABbAM3/AAAIAAMAAABcAMP/AAAAAAAAAABdAMf/AAAAAAAAAABfAMj/AAAAAAAAAABfAMn/AAAAAAAAAABfAMr/AAAAAAAAAABfAMv/AAAAAAAAAABfAMz/AAAAAAAAAABfAM3/AAAAAAAAAABfAM7/AAAAAAAAAABfAM//AAAAAAAAAABfAND/AAAAAAAAAABfANH/AAAAAAAAAABfANL/AAAAAAAAAABiAMT/AAAAAAAAAABiAMX/AAAAAAAAAABiAMb/AAAAAAAAAABiAMf/AAAAAAAAAABiAMj/AAAAAAAAAABiAMn/AAAAAAAAAABiAMr/AAAAAAAAAABiAMv/AAAAAAAAAABiAMz/AAAAAAAAAABiAM3/AAAAAAAAAABjAM7/AAAAAAAAAAAjAN3/AAAIAAMAAAAnAN3/AAAIAAMAAAArAN3/AAAIAAMAAAAvAN3/AAAIAAMAAAB1//v/AAAJAAEAAAB1//z/AAAJAAIAAAB1//3/AAAJAAMAAAB1//n/AAAJAAIAAAB1//r/AAAJAAIAAAB1//j/AAAJAAEAAAB1//b/AAAJAAEAAAB1//f/AAAJAAIAAAB1//T/AAAJAAEAAAB1//X/AAAJAAIAAAB1//L/AAAJAAEAAAB1//P/AAAJAAIAAAB1//D/AAAJAAEAAAB1//H/AAAJAAIAAAB1/+7/AAAJAAEAAAB1/+//AAAJAAIAAABx/+3/AAAJAAEAAABx/+7/AAAJAAIAAABt/+z/AAAJAAEAAABt/+3/AAAJAAIAAABt/+r/AAAAAAAAAABq/+j/AAAAAAAAAABr/+j/AAAAAAAAAABs/+j/AAAAAAAAAABr/9r/AAAIAAAAAABr/9v/AAAIAAEAAABr/9z/AAAIAAIAAABr/93/AAAIAAMAAAA5/9T/AAAJAAIAAAA5/9X/AAAJAAIAAAA5/9b/AAAJAAMAAAA5/9P/AAAJAAEAAAA5/9H/AAAJAAEAAAA5/9L/AAAJAAIAAAA5/8//AAAJAAEAAAA5/9D/AAAJAAIAAAA5/83/AAAJAAIAAAA5/87/AAAJAAIAAAA5/8z/AAAJAAEAAAA5/8r/AAAJAAEAAAA5/8v/AAAJAAIAAAA=")
 tile_set = SubResource("TileSet_s8va5")
 

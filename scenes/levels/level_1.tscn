@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://6fq51yolr8dk" path="res://assets/sprites/interactables/interactables.png" id="2_sk5k4"]
 [ext_resource type="Texture2D" uid="uid://btjcxaq8me204" path="res://assets/sprites/environment/world_spritesheet_norm.png" id="3_excbq"]
 [ext_resource type="PackedScene" uid="uid://c31fo72ynawpb" path="res://scenes/actors/enemies/enemy.tscn" id="4_dga24"]
+[ext_resource type="Texture2D" uid="uid://bx7ik22kr2int" path="res://assets/sprites/interactables/interactables_normal.png" id="4_excbq"]
 [ext_resource type="PackedScene" uid="uid://c0pnl132luwtt" path="res://scenes/actors/players/player.tscn" id="4_qxy0u"]
 [ext_resource type="PackedScene" uid="uid://73e84pn8oi6k" path="res://scenes/interactables/finish_flag.tscn" id="5_qxy0u"]
 [ext_resource type="PackedScene" uid="uid://0gbo76fibve1" path="res://scenes/ui/touch_controls.tscn" id="7_oc4kc"]
@@ -136,71 +137,33 @@ custom_data_layer_1/name = "is_spike"
 custom_data_layer_1/type = 1
 sources/0 = SubResource("TileSetAtlasSource_iav0o")
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_t4umt"]
-polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ndtll"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_4yk0h"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_vmrhw"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_cfnpk"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_wvtie"]
-polygon = PackedVector2Array(-4, -4, 3, -4, -4, -4)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_o8s4s"]
-polygon = PackedVector2Array(-4, 2, 3, 2, -4, 2)
+[sub_resource type="CanvasTexture" id="CanvasTexture_iav0o"]
+diffuse_texture = ExtResource("2_sk5k4")
+normal_texture = ExtResource("4_excbq")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_oc4kc"]
-texture = ExtResource("2_sk5k4")
+texture = SubResource("CanvasTexture_iav0o")
 8:0/0 = 0
-8:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:0/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:0/0/custom_data_0 = true
 9:0/0 = 0
-9:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:0/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:0/0/custom_data_0 = true
 8:1/0 = 0
-8:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:1/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:1/0/custom_data_0 = true
 9:1/0 = 0
-9:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:1/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:1/0/custom_data_0 = true
 8:2/0 = 0
-8:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:2/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:2/0/custom_data_0 = true
 9:2/0 = 0
-9:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:2/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:2/0/custom_data_0 = true
 8:3/0 = 0
-8:3/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-8:3/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 8:3/0/custom_data_0 = true
 9:3/0 = 0
-9:3/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_ndtll")
-9:3/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_4yk0h")
 9:3/0/custom_data_0 = true
 8:4/0 = 0
-8:4/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vmrhw")
-8:4/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_cfnpk")
 8:4/0/custom_data_0 = true
 9:4/0 = 0
-9:4/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_wvtie")
-9:4/0/occlusion_layer_0/polygon_1/polygon = SubResource("OccluderPolygon2D_o8s4s")
 9:4/0/custom_data_0 = true
 0:0/0 = 0
-0:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_t4umt")
 0:0/0/custom_data_1 = true
 
 [sub_resource type="TileSet" id="TileSet_s8va5"]
@@ -251,7 +214,7 @@ tile_map_data = PackedByteArray("AADJ/wAAAAABAAAAAADK/wAAAAABAAAAAADL/wAAAAABAAA
 tile_set = SubResource("TileSet_dnkej")
 
 [node name="Interactables" type="TileMapLayer" parent="." unique_id=1127347070 groups=["InteractableLayers"]]
-modulate = Color(0.7131886, 0.7206767, 1, 1)
+modulate = Color(0.73878837, 0.73878837, 0.73878837, 1)
 tile_map_data = PackedByteArray("AAANAPn/AAAIAAMAAAAOAPn/AAAIAAMAAAAPAPn/AAAIAAMAAAAQAPn/AAAIAAMAAAARAPn/AAAIAAMAAAASAPn/AAAIAAMAAAATAPn/AAAIAAMAAAAUAPn/AAAIAAMAAAAVAPn/AAAIAAMAAAAbAPn/AAAIAAMAAAAcAPn/AAAIAAMAAAAcAPj/AAAIAAMAAAAPAPH/AAAJAAAAAAAPAPL/AAAJAAEAAAAPAPP/AAAJAAIAAAAPAPT/AAAJAAMAAAAWAPn/AAAIAAMAAAAeAPL/AAAJAAAAAAAeAPP/AAAJAAEAAAAeAPT/AAAJAAIAAAAeAPX/AAAJAAMAAAAjAPn/AAAJAAQAAAAwAOj/AAAIAAMAAAA1AOj/AAAIAAMAAAA6AOj/AAAIAAMAAAA/AOj/AAAIAAMAAABEAOj/AAAIAAMAAABJAOj/AAAIAAMAAABOAOj/AAAIAAMAAABOAOf/AAAIAAAAAAAxAN//AAAIAAAAAAAxAOD/AAAIAAEAAAAxAOH/AAAIAAMAAAAyAN7/AAAIAAAAAAAyAN//AAAIAAEAAAAyAOD/AAAIAAMAAAA3ANz/AAAIAAAAAAA3AN3/AAAIAAEAAAA3AN7/AAAIAAIAAAA3AN//AAAIAAMAAAA8ANr/AAAIAAAAAAA8ANv/AAAIAAEAAAA8ANz/AAAIAAIAAAA8AN3/AAAIAAMAAABBANj/AAAIAAIAAABBANn/AAAIAAEAAABBANr/AAAIAAIAAABBANv/AAAIAAMAAABBANb/AAAIAAAAAABBANf/AAAIAAEAAAAgAMz/AAAJAAEAAAAgAM3/AAAJAAIAAAAgAM7/AAAJAAIAAAAgAM//AAAJAAMAAAAgAMv/AAAJAAAAAABFAOX/AAAAAAAAAABGAOX/AAAAAAAAAABHAOX/AAAAAAAAAABIAOX/AAAAAAAAAAAzAOb/AAAAAAAAAAA0AOb/AAAAAAAAAAA1AOb/AAAAAAAAAAA2AOb/AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAA=")
 tile_set = SubResource("TileSet_s8va5")
 
