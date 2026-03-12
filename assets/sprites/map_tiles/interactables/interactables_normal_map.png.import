@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tqrvgry3bbjh"
-path="res://.godot/imported/booshead1.png-2801fc5fdb7a72fb94cd59a17ec28caf.ctex"
+uid="uid://2bi25lj3vn8x"
+path="res://.godot/imported/interactables_normal_map.png-df5da6db6b424e335e84f991e0bbebb7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/bosses/boss1/booshead1.png"
-dest_files=["res://.godot/imported/booshead1.png-2801fc5fdb7a72fb94cd59a17ec28caf.ctex"]
+source_file="res://assets/sprites/map_tiles/interactables/interactables_normal_map.png"
+dest_files=["res://.godot/imported/interactables_normal_map.png-df5da6db6b424e335e84f991e0bbebb7.ctex"]
 
 [params]
 

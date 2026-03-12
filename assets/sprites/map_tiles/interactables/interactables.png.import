@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bx7ik22kr2int"
-path="res://.godot/imported/interactables_normal.png-a4e8d2ed0a0a2537d2c267660c04b711.ctex"
+uid="uid://c1t8jaimd0w1u"
+path="res://.godot/imported/interactables.png-a35444a3feed4b3d22ecbb0ca03df8f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/interactables/interactables_normal.png"
-dest_files=["res://.godot/imported/interactables_normal.png-a4e8d2ed0a0a2537d2c267660c04b711.ctex"]
+source_file="res://assets/sprites/map_tiles/interactables/interactables.png"
+dest_files=["res://.godot/imported/interactables.png-a35444a3feed4b3d22ecbb0ca03df8f7.ctex"]
 
 [params]
 

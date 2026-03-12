@@ -1,7 +1,7 @@
 extends Node
 class_name BossAIComponent
 
-enum State { DORMANT, IDLE, SLAM_TRACK, SLAM_DOWN, SWEEP, FIREBALL, FIREBALL_WAVES }
+enum State { DORMANT, IDLE, SLAM_TRACK, SLAM_DOWN, SWEEP, FIREBALL, FIREBALL_WAVES, RECOVERY }
 
 @export_group("Aggro Settings")
 @export var aggro_area: Area2D
@@ -28,10 +28,20 @@ enum State { DORMANT, IDLE, SLAM_TRACK, SLAM_DOWN, SWEEP, FIREBALL, FIREBALL_WAV
 @export var facing_deadzone := 12.0 
 @export var lock_facing_during_slam := true 
 
-@export_group("Idle Settings")
+@export_group("Idle & Flight Settings")
 @export var idle_move_speed := 50.0
 @export var idle_duration := 3.0
 @export var detection_range := 40.0 
+@export var default_flight_height := 75.0 
+@export var height_adjust_speed := 3.0
+
+@export_group("Recovery Settings")
+@export var recovery_duration := 2.5
+@export var recovery_flight_height := 20.0 
+@export var slam_causes_recovery := true
+@export var sweep_causes_recovery := true
+@export var fireball_causes_recovery := false
+@export var fireball_waves_causes_recovery := true
 
 @export_group("Down Slam Settings")
 @export var slam_height := 60.0      
@@ -39,12 +49,15 @@ enum State { DORMANT, IDLE, SLAM_TRACK, SLAM_DOWN, SWEEP, FIREBALL, FIREBALL_WAV
 @export var max_tracking_speed := 300.0
 @export var tracking_acceleration := 1200.0
 @export var slam_fall_speed := 800.0 
+@export var slam_bounce_strength := 250.0 # NEW: Control how high he bounces off the floor
 
 @export_group("Floor Sweep Settings")
 @export var sweep_height := 20.0     
 @export var sweep_speed := 250.0      
 @export var sweep_prep_time := 0.8    
 @export var sweep_distance := 300.0   
+@export_range(0.0, 1.0) var sweep_bounce_multiplier := 0.7 # NEW: Control horizontal wall bounce
+@export var sweep_bounce_height := 150.0 # NEW: Control vertical wall pop-up
 
 @export_group("Targeted Fireball Settings")
 @export var fireball_scene: PackedScene
@@ -58,7 +71,6 @@ enum State { DORMANT, IDLE, SLAM_TRACK, SLAM_DOWN, SWEEP, FIREBALL, FIREBALL_WAV
 @export var wave_fire_rate := 0.5     
 @export var spiral_outward_speed := 50.0 
 @export var spiral_spin_speed := 2.0  
-# REMOVED wave_duration!
 
 # Internal State
 @onready var entity: GameEntity = owner as GameEntity
@@ -66,6 +78,8 @@ var player: GameEntity
 var current_state: State = State.DORMANT
 var state_timer := 0.0
 var hover_time := 0.0
+var hover_phase := 0.0 
+var current_hover_amp := 0.0 
 var current_dir := Vector2(1, -0.5) 
 var current_facing := 1.0 
 var sweep_dir := 1.0
@@ -82,6 +96,7 @@ func _ready():
 	if entity.movement_component: entity.movement_component.set_physics_process(false)
 	if entity.jump_component: entity.jump_component.set_physics_process(false)
 	
+	current_hover_amp = hover_amplitude
 	player = get_tree().get_first_node_in_group("Player") as GameEntity
 	
 	if entity.animator: 
@@ -117,6 +132,7 @@ func _physics_process(delta: float):
 		State.SWEEP: process_sweep(delta)
 		State.FIREBALL: process_fireball(delta)
 		State.FIREBALL_WAVES: process_fireball_waves(delta)
+		State.RECOVERY: process_recovery(delta)
 
 func _on_aggro_area_entered(body: Node2D):
 	if current_state == State.DORMANT and (body is GameEntity or body.is_in_group("Player")):
@@ -133,6 +149,15 @@ func change_state(new_state: State):
 	if current_state == State.SWEEP:
 		sweep_dir = -1.0 if is_instance_valid(player) and player.global_position.x < entity.global_position.x else 1.0
 		current_facing = sweep_dir
+
+	# --- Animation Switching ---
+	if entity.animator:
+		if current_state == State.FIREBALL:
+			entity.animator.play("shoot")
+		elif current_state == State.RECOVERY: 
+			entity.animator.play("recover")
+		else:
+			entity.animator.play("idle")
 
 func pick_next_attack():
 	var pool = []
@@ -152,8 +177,15 @@ func process_idle(delta: float):
 	state_timer += delta
 	check_boundaries()
 	
-	var target_vel = current_dir.normalized() * idle_move_speed
-	entity.velocity = entity.velocity.move_toward(target_vel, 10.0) 
+	var target_vel_x = current_dir.x * idle_move_speed
+	entity.velocity.x = move_toward(entity.velocity.x, target_vel_x, 15.0)
+	
+	if is_instance_valid(player):
+		var target_y = player.global_position.y - default_flight_height
+		var target_vel_y = (target_y - entity.global_position.y) * height_adjust_speed
+		entity.velocity.y = move_toward(entity.velocity.y, target_vel_y, 15.0)
+	else:
+		entity.velocity.y = move_toward(entity.velocity.y, 0.0, 10.0)
 	
 	if state_timer >= idle_duration:
 		pick_next_attack()
@@ -166,9 +198,18 @@ func process_sweep(delta: float):
 		entity.velocity.y = (target_y - entity.global_position.y) * 5.0
 		entity.velocity.x = move_toward(entity.velocity.x, 0.0, 15.0)
 	else:
-		entity.velocity = Vector2(sweep_dir * sweep_speed, 0)
+		entity.velocity.x = sweep_dir * sweep_speed
+		
+		# Only check for state change once he's actually moving
 		if state_timer >= sweep_prep_time + (sweep_distance / sweep_speed) or entity.is_on_wall():
-			change_state(State.IDLE)
+			
+			# Organic Wall Recoil! 
+			# If he slams into a wall, he violently bounces off and pops up slightly
+			if entity.is_on_wall():
+				entity.velocity.x = -sweep_dir * (sweep_speed * sweep_bounce_multiplier) 
+				entity.velocity.y = -sweep_bounce_height 
+				
+			change_state(State.RECOVERY if sweep_causes_recovery else State.IDLE)
 
 func process_slam_track(delta: float):
 	state_timer += delta
@@ -189,10 +230,14 @@ func process_slam_track(delta: float):
 		change_state(State.SLAM_DOWN)
 
 func process_slam_down(_delta: float):
-	entity.velocity = Vector2(0, slam_fall_speed)
+	entity.velocity.x = move_toward(entity.velocity.x, 0.0, 20.0)
+	entity.velocity.y = slam_fall_speed
 	
 	if entity.is_on_floor():
-		change_state(State.IDLE)
+		# Organic Floor Recoil!
+		# The boss physically bounces off the floor when he hits it
+		entity.velocity.y = -slam_bounce_strength
+		change_state(State.RECOVERY if slam_causes_recovery else State.IDLE)
 
 func process_fireball(delta: float):
 	state_timer += delta
@@ -210,21 +255,52 @@ func process_fireball(delta: float):
 		shoot_fireball()
 		
 	if state_timer >= fireball_duration:
-		change_state(State.IDLE)
+		change_state(State.RECOVERY if fireball_causes_recovery else State.IDLE)
 
 func process_fireball_waves(delta: float):
 	state_timer += delta
 	fire_timer += delta
 	
-	entity.velocity = entity.velocity.move_toward(Vector2.ZERO, 15.0)
+	entity.velocity.x = move_toward(entity.velocity.x, 0.0, 15.0)
+	if is_instance_valid(player):
+		var target_y = player.global_position.y - default_flight_height
+		var target_vel_y = (target_y - entity.global_position.y) * height_adjust_speed
+		entity.velocity.y = move_toward(entity.velocity.y, target_vel_y, 15.0)
+	else:
+		entity.velocity.y = move_toward(entity.velocity.y, 0.0, 10.0)
 	
 	if fire_timer >= wave_fire_rate and waves_fired < waves_count:
 		fire_timer = 0.0
 		shoot_fireball_circle()
 		waves_fired += 1
 		
-	# CHANGED: Now only exits IDLE when the required waves are fired and a 1-second cooldown has passed
 	if waves_fired >= waves_count and fire_timer > 1.0:
+		change_state(State.RECOVERY if fireball_waves_causes_recovery else State.IDLE)
+
+func process_recovery(delta: float):
+	state_timer += delta
+	
+	# Exhausted Drift
+	# He lazily floats backward away from the player to create space while vulnerable
+	var target_vel_x = 0.0
+	if is_instance_valid(player):
+		var dir_away = sign(entity.global_position.x - player.global_position.x)
+		if dir_away == 0: dir_away = 1.0
+		target_vel_x = dir_away * 30.0 # Slow retreat speed
+	
+	# Smooth Skidding
+	# move_toward allows him to physically skid to a halt from his sweep, 
+	# and allows his wall/floor bounces to play out organically before he settles into the drift
+	entity.velocity.x = move_toward(entity.velocity.x, target_vel_x, 200.0 * delta)
+	
+	if is_instance_valid(player):
+		var target_y = player.global_position.y - recovery_flight_height
+		var target_vel_y = (target_y - entity.global_position.y) * (height_adjust_speed * 0.4)
+		entity.velocity.y = lerp(entity.velocity.y, target_vel_y, delta * 3.0)
+	else:
+		entity.velocity.y = lerp(entity.velocity.y, 0.0, delta * 3.0)
+	
+	if state_timer >= recovery_duration:
 		change_state(State.IDLE)
 
 func shoot_fireball():
@@ -259,11 +335,18 @@ func shoot_fireball_circle():
 
 # --- Visuals & Helpers ---
 
-func apply_visual_offsets(_delta: float):
+func apply_visual_offsets(delta: float):
 	var offset := Vector2.ZERO
 	
+	var is_recovering = current_state == State.RECOVERY
+	var target_amp = hover_amplitude * (0.3 if is_recovering else 1.0)
+	var target_speed = hover_speed * (0.5 if is_recovering else 1.0)
+	
+	current_hover_amp = lerp(current_hover_amp, target_amp, delta * 4.0)
+	hover_phase += target_speed * delta
+	
 	if current_state != State.DORMANT and current_state != State.SLAM_DOWN:
-		offset.y += sin(hover_time * hover_speed) * hover_amplitude
+		offset.y += sin(hover_phase) * current_hover_amp
 	
 	var is_wobbling = false
 	var intensity = 0.0
@@ -311,7 +394,7 @@ func handle_facing(delta: float):
 
 func check_boundaries():
 	var space = entity.get_world_2d().direct_space_state
-	var dirs = {"up": Vector2.UP, "left": Vector2.LEFT, "right": Vector2.RIGHT, "down": Vector2.DOWN}
+	var dirs = {"left": Vector2.LEFT, "right": Vector2.RIGHT} 
 	
 	for key in dirs:
 		var q = PhysicsRayQueryParameters2D.create(
@@ -322,8 +405,6 @@ func check_boundaries():
 		
 		if space.intersect_ray(q):
 			match key:
-				"up": current_dir.y = randf_range(0.3, 0.7)
-				"down": current_dir.y = randf_range(-0.3, -0.7)
 				"left": current_dir.x = 1.0
 				"right": current_dir.x = -1.0
 			break

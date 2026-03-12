@@ -1,30 +1,44 @@
 [gd_scene format=3 uid="uid://cm32rk22hdd44"]
 
 [ext_resource type="Script" uid="uid://batl3bq2goagr" path="res://scripts/components/GameEntity.gd" id="1_tatcp"]
-[ext_resource type="Texture2D" uid="uid://tqrvgry3bbjh" path="res://assets/sprites/enemies/bosses/boss1/booshead1.png" id="2_m1twv"]
+[ext_resource type="Texture2D" uid="uid://tqrvgry3bbjh" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead1.png" id="2_m1twv"]
 [ext_resource type="Script" uid="uid://c7ygsei8n7w00" path="res://scripts/components/MovementComponent.gd" id="3_8x3bm"]
-[ext_resource type="Texture2D" uid="uid://drqgdy3gyi28v" path="res://assets/sprites/enemies/bosses/boss1/booshead2.png" id="3_cbpry"]
-[ext_resource type="Texture2D" uid="uid://cggdcuj5cecb8" path="res://assets/sprites/enemies/bosses/boss1/booshead3.png" id="4_dvytk"]
+[ext_resource type="Texture2D" uid="uid://drqgdy3gyi28v" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead2.png" id="3_cbpry"]
+[ext_resource type="Texture2D" uid="uid://cggdcuj5cecb8" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead3.png" id="4_dvytk"]
 [ext_resource type="Script" uid="uid://c7c3v74igl6e4" path="res://scripts/components/AttackComponent.gd" id="4_sxvgg"]
 [ext_resource type="Script" uid="uid://b5q3c5emyfv7h" path="res://scripts/components/DashComponent.gd" id="5_1ho8j"]
-[ext_resource type="Texture2D" uid="uid://3h0565jcwo1n" path="res://assets/sprites/enemies/bosses/boss1/booshead4.png" id="5_17fb3"]
-[ext_resource type="Texture2D" uid="uid://b3fqirdxcjsdg" path="res://assets/sprites/enemies/bosses/boss1/booshead5.png" id="6_frtrh"]
+[ext_resource type="Texture2D" uid="uid://3h0565jcwo1n" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead4.png" id="5_17fb3"]
+[ext_resource type="Texture2D" uid="uid://b3fqirdxcjsdg" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead5.png" id="6_frtrh"]
 [ext_resource type="Script" uid="uid://bm4ks5gksd7v4" path="res://scripts/components/HealthComponent.gd" id="6_ttdr1"]
-[ext_resource type="Texture2D" uid="uid://dssdsujed4r5a" path="res://assets/sprites/enemies/bosses/boss1/booshead6.png" id="7_b78ep"]
+[ext_resource type="Texture2D" uid="uid://dssdsujed4r5a" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead6.png" id="7_b78ep"]
 [ext_resource type="Script" uid="uid://d0b7p6mi0w108" path="res://scripts/components/KnockbackComponent.gd" id="7_miwfg"]
-[ext_resource type="Texture2D" uid="uid://blu236eqhq8ic" path="res://assets/sprites/enemies/bosses/boss1/booshead7.png" id="8_cit0w"]
+[ext_resource type="Texture2D" uid="uid://blu236eqhq8ic" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead7.png" id="8_cit0w"]
 [ext_resource type="Script" uid="uid://c5vcy6kuf0sqh" path="res://scripts/components/LadderComponent.gd" id="8_ge1x1"]
 [ext_resource type="Script" uid="uid://dw0infuklharq" path="res://scripts/components/AnimationComponent.gd" id="9_i4tuh"]
-[ext_resource type="Texture2D" uid="uid://b37fvqq03jykc" path="res://assets/sprites/enemies/bosses/boss1/booshead8.png" id="9_qqgjt"]
+[ext_resource type="Texture2D" uid="uid://b37fvqq03jykc" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead8.png" id="9_qqgjt"]
 [ext_resource type="Script" uid="uid://bm42u1genesif" path="res://scripts/components/LedgeGrabComponent.gd" id="10_l4rnn"]
-[ext_resource type="Texture2D" uid="uid://bu6yamwbbavfp" path="res://assets/sprites/enemies/bosses/boss1/booshead9.png" id="10_n3ooh"]
+[ext_resource type="Texture2D" uid="uid://bu6yamwbbavfp" path="res://assets/sprites/enemies/bosses/boss1/idle/booshead9.png" id="10_n3ooh"]
+[ext_resource type="Texture2D" uid="uid://c1bsbqvc4wvb0" path="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover1.png" id="11_fpss2"]
 [ext_resource type="Script" uid="uid://dpgp5b13baubs" path="res://scripts/components/JumpComponent.gd" id="11_hnxes"]
+[ext_resource type="Texture2D" uid="uid://bwje7hxe02fub" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot1.png" id="11_jswmh"]
+[ext_resource type="Texture2D" uid="uid://d2pstr1u737qu" path="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover2.png" id="12_35xwo"]
+[ext_resource type="Texture2D" uid="uid://6h48b62oc3lx" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot2.png" id="12_58tbo"]
 [ext_resource type="Script" uid="uid://4tljvkghg6dg" path="res://scripts/components/ContactDamageComponent.gd" id="12_bsu33"]
 [ext_resource type="Script" uid="uid://domqadnngk83p" path="res://scripts/components/BossInputComponent.gd" id="13_8x3bm"]
+[ext_resource type="Texture2D" uid="uid://dpofwhvdebdpp" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot3.png" id="13_jt6tk"]
+[ext_resource type="Texture2D" uid="uid://dgkri781i6sjw" path="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover3.png" id="13_ysqtl"]
+[ext_resource type="Texture2D" uid="uid://da1qxwfvn1jh2" path="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover4.png" id="14_d1xgl"]
 [ext_resource type="Script" uid="uid://vikn68g6gacm" path="res://scripts/components/GravityComponent.gd" id="14_sxvgg"]
+[ext_resource type="Texture2D" uid="uid://bxdh8tae4wdkg" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot4.png" id="14_vtkhg"]
+[ext_resource type="Texture2D" uid="uid://vbicjnx3g4sb" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot5.png" id="15_0s574"]
+[ext_resource type="Texture2D" uid="uid://546gvo8u52ol" path="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover5.png" id="15_dmo5h"]
 [ext_resource type="Script" uid="uid://ba8t7837ojb07" path="res://scripts/components/DarknessTrailComponent.gd" id="15_sxvgg"]
 [ext_resource type="PackedScene" uid="uid://dm2w5lsulxhyq" path="res://scenes/actors/enemies/fireball.tscn" id="15_ttdr1"]
 [ext_resource type="Script" uid="uid://cj60ftc8jt2jj" path="res://scripts/components/PlayerInputComponent.gd" id="16_1ho8j"]
+[ext_resource type="Texture2D" uid="uid://cpymelahnv8iu" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot6.png" id="16_fpss2"]
+[ext_resource type="Texture2D" uid="uid://badasb4aim237" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot7.png" id="17_35xwo"]
+[ext_resource type="Texture2D" uid="uid://c3mkj7gcjfyq2" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot8.png" id="18_ysqtl"]
+[ext_resource type="Texture2D" uid="uid://cic5iaat0dje1" path="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot9.png" id="19_d1xgl"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_m2nnq"]
 animations = [{
@@ -64,6 +78,58 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_fpss2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_35xwo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_ysqtl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_d1xgl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_dmo5h")
+}],
+"loop": true,
+"name": &"recover",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_jswmh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_58tbo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_jt6tk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_vtkhg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_0s574")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_fpss2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_35xwo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_ysqtl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_d1xgl")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 4.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_m1twv"]
@@ -96,9 +162,7 @@ knockback_component = NodePath("Components/KnockbackComponent")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals" unique_id=1709906150]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_m2nnq")
-animation = &"idle"
-frame = 3
-frame_progress = 0.94462585
+animation = &"recover"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=528263607]
 position = Vector2(0, 1)
@@ -128,7 +192,12 @@ debug_color = Color(1, 0, 0.90532964, 0.42000002)
 script = ExtResource("13_8x3bm")
 aggro_area = NodePath("../../Area2D")
 wobble_max_strength = 3.0
+height_adjust_speed = 1.0
+fireball_causes_recovery = true
+slam_bounce_strength = 100.0
 sweep_height = 2.0
+sweep_bounce_multiplier = 0.475
+sweep_bounce_height = 100.0
 fireball_scene = ExtResource("15_ttdr1")
 waves_count = 6
 wave_fire_rate = 1.2

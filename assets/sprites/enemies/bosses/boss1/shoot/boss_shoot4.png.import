@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blu236eqhq8ic"
-path="res://.godot/imported/booshead7.png-bef5358eac662c75b62b918b09d7bbff.ctex"
+uid="uid://bxdh8tae4wdkg"
+path="res://.godot/imported/boss_shoot4.png-229d5ce2ad8312246fc607dbf6abe145.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/enemies/bosses/boss1/booshead7.png"
-dest_files=["res://.godot/imported/booshead7.png-bef5358eac662c75b62b918b09d7bbff.ctex"]
+source_file="res://assets/sprites/enemies/bosses/boss1/shoot/boss_shoot4.png"
+dest_files=["res://.godot/imported/boss_shoot4.png-229d5ce2ad8312246fc607dbf6abe145.ctex"]
 
 [params]
 

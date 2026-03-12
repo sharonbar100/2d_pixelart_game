@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6fq51yolr8dk"
-path="res://.godot/imported/interactables.png-0c24b5b149d08285cd9fb68b4a2478fc.ctex"
+uid="uid://da1qxwfvn1jh2"
+path="res://.godot/imported/boss_recover4.png-421821cde409f7f53835b5e66954c041.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/interactables/interactables.png"
-dest_files=["res://.godot/imported/interactables.png-0c24b5b149d08285cd9fb68b4a2478fc.ctex"]
+source_file="res://assets/sprites/enemies/bosses/boss1/recover/boss_recover4.png"
+dest_files=["res://.godot/imported/boss_recover4.png-421821cde409f7f53835b5e66954c041.ctex"]
 
 [params]
 

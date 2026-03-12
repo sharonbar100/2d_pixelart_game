@@ -266,6 +266,7 @@ height = 10.0
 size = Vector2(5, 1)
 
 [node name="Player" type="CharacterBody2D" unique_id=689512299 node_paths=PackedStringArray("animator", "main_collider", "attack_area", "hurtbox_area", "hurtbox_shape", "input_component", "movement_component", "jump_component", "gravity_component", "dash_component", "attack_component", "health_component", "knockback_component", "animation_component", "ladder_component", "ledge_component") groups=["Player"]]
+z_index = 5
 collision_layer = 2
 script = ExtResource("1_6v7h6")
 animator = NodePath("Graphics/AnimatedSprite2D")
