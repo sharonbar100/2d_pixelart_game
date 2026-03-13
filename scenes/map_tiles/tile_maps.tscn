@@ -43,33 +43,27 @@ texture = SubResource("CanvasTexture_apesj")
 0:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vwhr5")
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:0/0 = 0
-1:0/0/terrain = 0
 1:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_6dmac")
 1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:0/0 = 0
 2:0/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vwhr5")
 2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 0:1/0 = 0
-0:1/0/terrain = 0
 0:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_qkywy")
 0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:1/0 = 0
 1:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vwhr5")
 1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:1/0 = 0
-2:1/0/terrain = 0
 2:1/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_jemu1")
 2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 0:2/0 = 0
-0:2/0/terrain = 0
 0:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vwhr5")
 0:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 1:2/0 = 0
-1:2/0/terrain = 0
 1:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_apesj")
 1:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 2:2/0 = 0
-2:2/0/terrain = 0
 2:2/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_vwhr5")
 2:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 3:2/0 = 0
@@ -162,7 +156,8 @@ texture = SubResource("CanvasTexture_vwhr5")
 sources/1 = SubResource("TileSetAtlasSource_xb4wn")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qli43"]
-size = Vector2(16, 176)
+resource_local_to_scene = true
+size = Vector2(16, 16)
 
 [node name="TileMaps" type="Node2D" unique_id=1842945434]
 
@@ -177,6 +172,7 @@ tile_set = SubResource("TileSet_qxdf0")
 [node name="World_Background" type="TileMapLayer" parent="." unique_id=1937441030]
 modulate = Color(0.20990813, 0.20990813, 0.20990804, 1)
 z_index = -10
+position = Vector2(8, -8)
 tile_set = SubResource("TileSet_yt54c")
 
 [node name="TileModifierRegion" type="Area2D" parent="." unique_id=402073953 node_paths=PackedStringArray("tiles_to_add_layer", "tiles_to_remove_layer")]

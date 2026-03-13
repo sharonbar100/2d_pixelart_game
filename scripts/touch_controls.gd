@@ -2,15 +2,11 @@ extends CanvasLayer
 
 @export var force_show_on_pc: bool = false 
 
-# --- References for Diagonal Buttons ---
-@export var up_left_button: TouchScreenButton
-@export var up_right_button: TouchScreenButton
-
 func _ready() -> void:
 	# 1. Check if we are on a mobile device or forcing it for testing
 	if OS.has_feature("mobile") or force_show_on_pc:
+		# Automatically make all buttons support thumb-sliding!
 		_enable_passby_press_for_all()
-		_setup_diagonal_buttons()
 		
 		# 2. Listen for controller connections/disconnections
 		Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -22,8 +18,8 @@ func _ready() -> void:
 		hide()
 		queue_free()
 
-# --- NEW: Controller Detection Logic ---
-func _on_joy_connection_changed(device: int, connected: bool) -> void:
+# --- Controller Detection Logic ---
+func _on_joy_connection_changed(_device: int, _connected: bool) -> void:
 	_update_visibility_based_on_controller()
 
 func _update_visibility_based_on_controller() -> void:
@@ -35,33 +31,17 @@ func _update_visibility_based_on_controller() -> void:
 	else:
 		show()
 
-# --- Multi-Action Input Simulation ---
-func _setup_diagonal_buttons() -> void:
-	# Wire up the Up-Left button
-	if up_left_button:
-		up_left_button.pressed.connect(func(): _trigger_diagonal("move_up", "move_left", true))
-		up_left_button.released.connect(func(): _trigger_diagonal("move_up", "move_left", false))
-		
-	# Wire up the Up-Right button
-	if up_right_button:
-		up_right_button.pressed.connect(func(): _trigger_diagonal("move_up", "move_right", true))
-		up_right_button.released.connect(func(): _trigger_diagonal("move_up", "move_right", false))
-
-func _trigger_diagonal(action_y: String, action_x: String, is_pressed: bool) -> void:
-	# Manually push standard Input map actions so the Player script catches them
-	if is_pressed:
-		Input.action_press(action_y)
-		Input.action_press(action_x)
-	else:
-		Input.action_release(action_y)
-		Input.action_release(action_x)
-
 # --- Touch Control Setup Helpers ---
 func _enable_passby_press_for_all() -> void:
 	var all_touch_buttons = _get_all_touch_buttons(self)
 	
 	for button in all_touch_buttons:
+		# This is the magic that allows smooth thumb sliding between buttons!
 		button.passby_press = true
+		
+		# A helpful warning just in case you forgot to type the action name in the Inspector
+		if button.action == "":
+			print("WARNING: Touch button '", button.name, "' has no Action assigned in the inspector!")
 
 func _get_all_touch_buttons(node: Node) -> Array[TouchScreenButton]:
 	var found_buttons: Array[TouchScreenButton] = []
@@ -70,6 +50,7 @@ func _get_all_touch_buttons(node: Node) -> Array[TouchScreenButton]:
 		if child is TouchScreenButton:
 			found_buttons.append(child)
 		
+		# Recursively check children of children (e.g. if you put buttons inside a Control node)
 		if child.get_child_count() > 0:
 			found_buttons.append_array(_get_all_touch_buttons(child))
 			

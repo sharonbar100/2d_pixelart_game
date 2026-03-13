@@ -292,7 +292,7 @@ ledge_component = NodePath("Components/LedgeGrabComponent")
 light_mask = 0
 visibility_layer = 3
 sprite_frames = SubResource("SpriteFrames_vvl3a")
-animation = &"attack"
+animation = &"idle"
 
 [node name="MoveParticles" type="CPUParticles2D" parent="Graphics" unique_id=993913868]
 emitting = false
